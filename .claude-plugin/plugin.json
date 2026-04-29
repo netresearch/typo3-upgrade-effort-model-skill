@@ -1,0 +1,30 @@
+{
+  "name": "typo3-upgrade-effort-model",
+  "version": "1.0.0",
+  "description": "Generic TYPO3 LTS upgrade effort model: per-version risk multipliers (v14: Fluid 5 strict VHs, HashService removal, TSFE removal, asset-pipeline removal), breaking-change baselines, version-compatibility matrix, Rector coverage adjustments, and a 7-phase assessment workflow. Calibration-free — pair with your own historical project data for tuned estimates.",
+  "author": {
+    "name": "Netresearch DTT GmbH",
+    "url": "https://www.netresearch.de"
+  },
+  "repository": "https://github.com/netresearch/typo3-upgrade-effort-model-skill",
+  "license": "(MIT AND CC-BY-SA-4.0)",
+  "keywords": [
+    "agentic-skill",
+    "typo3",
+    "upgrade",
+    "estimation",
+    "lts",
+    "v14",
+    "v13",
+    "rector",
+    "fluid",
+    "breaking-changes"
+  ],
+  "support": {
+    "issues": "https://github.com/netresearch/typo3-upgrade-effort-model-skill/issues",
+    "source": "https://github.com/netresearch/typo3-upgrade-effort-model-skill"
+  },
+  "skills": [
+    "./skills/typo3-upgrade-effort-model"
+  ]
+}
