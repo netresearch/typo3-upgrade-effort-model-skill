@@ -10,14 +10,14 @@ Until a stable v14 of the library actually in use exists, an upgrade to v14 forc
 ## Measure the effort-driving dimension
 
 - Count the **populated** Flux content-element definitions, not the templates: `SELECT COUNT(DISTINCT CType) FROM tt_content WHERE CType LIKE '<ext>_%' AND deleted=0`. Definitions drive the modelling effort.
-- Count records for the data-migration / QA scope: `SELECT COUNT(*) ... deleted=0` (include hidden — they migrate too).
+- Count records for the data-migration / QA scope: `SELECT COUNT(*) FROM tt_content WHERE CType LIKE '<ext>_%' AND deleted=0` (include hidden, they migrate too).
 - Split definitions into **field-based** vs **container** elements (discriminator below); they take different targets.
 
 ## CB native nesting vs EXT:container (the key distinction)
 
 - Content Blocks native nesting is a `Collection` with a parent-reference field, and **`colPos` is always 0** (a single nested area). This reproduces single-area "wrapper" elements only.
 - Multi-column grids, where editors drop arbitrary content elements into several named columns each with its own `colPos`, are the **EXT:container model** and are **not** reproducible by pure Content Blocks. Source: Content Blocks docs "Nested Content Elements" — "Extensions like EXT:container ... assign a specific colPos value to the child elements".
-- **Discriminator in the Flux templates:** an element is a true multi-column container only if its template uses `contentContainer="true"` on a `flux:form.object` AND renders foreign content via `flux:content.render area="{...colPos}"` across multiple `flux:grid.column colPos=...`. A single fixed `colPos="1"` is single-area → CB native. No `contentContainer` / no `content.render` → field-based → CB.
+- **Discriminator in the Flux templates:** an element is a true multi-column container when its template defines a grid with `<flux:grid>` and multiple `<flux:grid.column colPos="...">` and renders foreign content per column via `flux:content.render area="{...colPos}"`. The section-object variant is a `flux:form.object` marked `contentContainer="true"` (the `ObjectViewHelper` registers this argument and assigns an automatic `colPos`). A single fixed `colPos` / single area is single-area → CB native. No grid and no `content.render` → field-based → CB.
 - Architecture for a grid-heavy project is therefore **Content Blocks + b13/container**, not CB alone.
 
 ## Tooling: webcoast/migrator (verify maturity per project)
