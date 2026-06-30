@@ -1,6 +1,11 @@
 # Flux → Content Blocks migration (v13/v14)
 
-When a project uses `fluidtypo3/flux` (usually with `fluidtypo3/vhs`) for content elements, factor this in as a dedicated cost block. As of mid-2026 neither Flux nor VHS has a TYPO3 v14 release and no public roadmap, so an upgrade to v14 forces either a fork-lead of both libraries or a migration of the content to `friendsoftypo3/content-blocks` (+ `b13/container` for grid elements).
+When a project uses `fluidtypo3/flux` (usually with `fluidtypo3/vhs`) for content elements, factor this in as a dedicated cost block. As of mid-2026 neither library has a stable TYPO3 v14 release, but they differ on roadmap, so check both on Packagist at estimate time:
+
+- **Flux** has active v14 development: `dev-development` and `dev-feature/v14` declare `^12 || ^13 || ^14.3` (as of 2026-06-18). A stable Flux v14 may therefore land, which would make a Flux fork-lead unnecessary.
+- **VHS** has no v14 even on its dev branches (`dev-development` is still `^12 || ^13` as of 2026-06-30) and is the harder blocker.
+
+Until a stable v14 of the library actually in use exists, an upgrade to v14 forces either a fork-lead of the missing library (VHS in particular) or a migration of the content to `friendsoftypo3/content-blocks` (+ `b13/container` for grid elements). The migration path below stays the safe planning assumption.
 
 ## Measure the effort-driving dimension
 
