@@ -48,7 +48,7 @@ done
 
 Output: per-extension flag (`v14-ready` / `v14-via-fork` / `replace` / `stale-no-replacement`).
 
-**Before flagging an extension as `needs-update`, read the currently-installed version's own `typo3/cms-core` constraint** — a recent release may already declare the target major (an installed `^12 || ^13 || ^14` constraint is already target-ready, no bump needed). Check tags AND dev-branches on Packagist (`repo.packagist.org/p2/<vendor>/<pkg>.json` and `…/<pkg>~dev.json`). A dependency with neither a tag nor a dev-branch above the current major is a genuine blocker, not a bump — and if the project owns a custom extension that depends on it, that custom extension is blocked too.
+**Before flagging an extension as `needs-update`, read the currently-installed version's own `typo3/cms-core` constraint** — a recent release may already declare the target major (an installed `^12 || ^13 || ^14` constraint is already target-ready, no bump needed). Check tags AND dev-branches on Packagist (`repo.packagist.org/p2/<vendor>/<pkg>.json` and `repo.packagist.org/p2/<vendor>/<pkg>~dev.json`). A dependency with neither a tag nor a dev-branch above the current major is a genuine blocker, not a bump — and if the project owns a custom extension that depends on it, that custom extension is blocked too.
 
 ## Phase 4 — Custom Code Analysis
 
@@ -58,7 +58,7 @@ Scan custom code for breaking-change triggers. Each trigger maps to a multiplier
 # v14 triggers
 grep -rln "HashService" Classes/ Configuration/
 grep -rln "\$GLOBALS\['TSFE'\]" Classes/
-grep -rln "findBy[A-Z]" Classes/Domain/Repository/
+grep -rln "->findBy[A-Z]\|->findOneBy[A-Z]\|->countBy[A-Z]" Classes/
 find . -name "ext_tables.php" -not -path "./.Build/*"
 grep -rln "config\.concatenateCss\|config\.concatenateJs" Configuration/TypoScript/
 grep -rln "list_type\|is_static\|eval=.*year" Configuration/TCA/
@@ -66,7 +66,7 @@ grep -rln "list_type\|is_static\|eval=.*year" Configuration/TCA/
 
 Output: counts per trigger across the codebase.
 
-**The greps yield trigger *candidates*, not confirmed multipliers — verify the semantics before applying a multiplier in Phase 5.** A `findBy*` match may be a self-defined repository method using `createQuery()`, not an Extbase magic finder (the magic-finder removal does not apply to it). A `concatenate*` match alongside an already-present build tool (Vite/webpack) is a config migration, not a tooling introduction. Open each hit and confirm it is the construct the multiplier targets; drop the false positives.
+**The greps yield trigger *candidates*, not confirmed multipliers — verify the semantics before applying a multiplier in Phase 5.** A `findBy*`/`findOneBy*`/`countBy*` hit counts only when it is a *call* that resolves through Extbase's `Repository::__call` (removed in v14.0); a method of that name *defined* inside a repository (using `createQuery()`) is a regular method, not a magic finder — hits under `Classes/Domain/Repository/` are definitions and are false positives here. A `concatenate*` match alongside an already-present build tool (Vite/webpack) is a config migration, not a tooling introduction. Open each hit and confirm it is the construct the multiplier targets; drop the false positives.
 
 ## Phase 5 — Risk Level Calculation
 
