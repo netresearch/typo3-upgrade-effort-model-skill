@@ -1,6 +1,6 @@
 {
   "name": "typo3-upgrade-effort-model",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Generic TYPO3 LTS upgrade effort model: per-version risk multipliers (v14: Fluid 5 strict VHs, HashService removal, TSFE removal, asset-pipeline removal), breaking-change baselines, version-compatibility matrix, Rector coverage adjustments, and a 7-phase assessment workflow. Calibration-free — pair with your own historical project data for tuned estimates.",
   "author": {
     "name": "Netresearch DTT GmbH",
