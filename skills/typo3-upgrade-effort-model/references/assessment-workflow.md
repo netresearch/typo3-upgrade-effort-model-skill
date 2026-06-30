@@ -12,7 +12,7 @@ php --version
 # Extension inventory — full installed set, every vendor (classify in Phase 2)
 composer show --installed --format json | jq -r '.installed[].name' | sort
 # extensions only (by package type), any vendor:
-jq -r '(.packages[]?, ."packages-dev"[]?) | select(.type? // "" | test("typo3-cms")) | .name' composer.lock | sort
+jq -r '(.packages[]?, .["packages-dev"][]?) | select(.type? | strings | test("typo3-cms")) | .name' composer.lock | sort
 
 # Build tooling
 ls -la package.json vite.config.* webpack.config.* gulpfile.* 2>/dev/null
@@ -60,7 +60,7 @@ Scan custom code for breaking-change triggers. Each trigger maps to a multiplier
 # v14 triggers
 grep -rln "HashService" Classes/ Configuration/
 grep -rln "\$GLOBALS\['TSFE'\]" Classes/
-grep -E -rln "->(findBy|findOneBy|countBy)[A-Z]" Classes/
+grep -E -rln "->(findBy|findOneBy|countBy)[[:upper:]]" Classes/
 find . -name "ext_tables.php" -not -path "./.Build/*"
 grep -rln "config\.concatenateCss\|config\.concatenateJs" Configuration/TypoScript/
 grep -rln "list_type\|is_static\|eval=.*year" Configuration/TCA/
