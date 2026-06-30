@@ -58,7 +58,7 @@ Scan custom code for breaking-change triggers. Each trigger maps to a multiplier
 # v14 triggers
 grep -rln "HashService" Classes/ Configuration/
 grep -rln "\$GLOBALS\['TSFE'\]" Classes/
-grep -rln "->findBy[A-Z]\|->findOneBy[A-Z]\|->countBy[A-Z]" Classes/
+grep -E -rln "->(findBy|findOneBy|countBy)[A-Z]" Classes/
 find . -name "ext_tables.php" -not -path "./.Build/*"
 grep -rln "config\.concatenateCss\|config\.concatenateJs" Configuration/TypoScript/
 grep -rln "list_type\|is_static\|eval=.*year" Configuration/TCA/
@@ -66,7 +66,7 @@ grep -rln "list_type\|is_static\|eval=.*year" Configuration/TCA/
 
 Output: counts per trigger across the codebase.
 
-**The greps yield trigger *candidates*, not confirmed multipliers — verify the semantics before applying a multiplier in Phase 5.** A `findBy*`/`findOneBy*`/`countBy*` hit counts only when it is a *call* that resolves through Extbase's `Repository::__call` (removed in v14.0); a method of that name *defined* inside a repository (using `createQuery()`) is a regular method, not a magic finder — hits under `Classes/Domain/Repository/` are definitions and are false positives here. A `concatenate*` match alongside an already-present build tool (Vite/webpack) is a config migration, not a tooling introduction. Open each hit and confirm it is the construct the multiplier targets; drop the false positives.
+**The greps yield trigger *candidates*, not confirmed multipliers. Verify the semantics before applying a multiplier in Phase 5.** A `->findBy*()`/`->findOneBy*()`/`->countBy*()` call is a magic finder only when it resolves through Extbase's `Repository::__call` (removed in v14.0). The same call may instead target a `findBy*` method explicitly defined on the repository (using `createQuery()`), which is a regular method and is unaffected, so confirm the target repository does not define the method before counting it. A `concatenate*` match alongside an already-present build tool (Vite/webpack) is a config migration, not a tooling introduction. Open each hit and confirm it is the construct the multiplier targets; drop the false positives.
 
 ## Phase 5 — Risk Level Calculation
 
