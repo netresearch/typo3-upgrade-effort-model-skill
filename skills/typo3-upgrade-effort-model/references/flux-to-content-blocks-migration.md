@@ -11,6 +11,7 @@ Until a stable v14 of the library actually in use exists, an upgrade to v14 forc
 
 - Count the **populated** Flux content-element definitions, not the templates: `SELECT COUNT(DISTINCT CType) FROM tt_content WHERE CType LIKE '<ext>_%' AND deleted=0`. Definitions drive the modelling effort.
 - Count records for the data-migration / QA scope: `SELECT COUNT(*) FROM tt_content WHERE CType LIKE '<ext>_%' AND deleted=0` (include hidden, they migrate too).
+- `<ext>_` is a placeholder for the real CType prefix. Flux elements can span several extensions and the CType is not always `<ext>_`-prefixed (older setups use a `flux_` prefix), so discover the actual prefixes first (`SELECT DISTINCT CType FROM tt_content WHERE deleted=0`) and run the counts per prefix.
 - Split definitions into **field-based** vs **container** elements (discriminator below); they take different targets.
 
 ## CB native nesting vs EXT:container (the key distinction)
