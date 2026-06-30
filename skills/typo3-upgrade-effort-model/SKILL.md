@@ -71,3 +71,4 @@ For Netresearch-internal calibration with historical project data, see `coding-a
 - `references/extension-classification.md` — categories and risk
 - `references/assessment-workflow.md` — command-level workflow
 - `references/rector-coverage.md` — Rector counts and discounts
+- `references/flux-to-content-blocks-migration.md` — Flux/VHS → Content Blocks + b13/container (cost block for Flux-based projects)
