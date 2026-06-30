@@ -50,7 +50,7 @@ done
 
 Output: per-extension flag (`v14-ready` / `v14-via-fork` / `replace` / `stale-no-replacement`).
 
-**Before flagging an extension as `needs-update`, read the currently-installed version's own `typo3/cms-core` constraint** — a recent release may already declare the target major (an installed `^12 || ^13 || ^14` constraint is already target-ready, no bump needed). Check tags AND dev-branches on Packagist (`repo.packagist.org/p2/<vendor>/<pkg>.json` and `repo.packagist.org/p2/<vendor>/<pkg>~dev.json`). A dependency with neither a tag nor a dev-branch above the current major is a genuine blocker, not a bump — and if the project owns a custom extension that depends on it, that custom extension is blocked too.
+**Before flagging an extension as `needs-update`, read the currently-installed version's own `typo3/cms-core` constraint** — a recent release may already declare the target major (an installed `^12 || ^13 || ^14` constraint is already target-ready, no bump needed). Check tags AND dev-branches on Packagist (`repo.packagist.org/p2/<vendor>/<pkg>.json` and `repo.packagist.org/p2/<vendor>/<pkg>~dev.json`). A dependency with neither a tag nor a dev-branch supporting the target major is a genuine blocker, not a bump. If the project owns a custom extension that depends on it, that custom extension is blocked too.
 
 ## Phase 4 — Custom Code Analysis
 
