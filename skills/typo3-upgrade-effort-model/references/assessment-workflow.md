@@ -22,6 +22,8 @@ ls Configuration/Sets 2>/dev/null
 
 Output: a table of `extension → current version → category` for every extension.
 
+**Enumerate the full installed set from `composer.lock` (or `composer show --installed`) — never a hand-supplied or ticket-supplied extension list.** A scope list from the request routinely omits extensions (transitive dependencies, sitepackage requirements, starter packages). Every missed extension is either silent effort or a silent compatibility blocker. Cross-check the count against the lockfile before moving on.
+
 ## Phase 2 — Extension Classification
 
 For each extension from Phase 1, assign a category from `extension-classification.md`:
@@ -46,6 +48,8 @@ done
 
 Output: per-extension flag (`v14-ready` / `v14-via-fork` / `replace` / `stale-no-replacement`).
 
+**Before flagging an extension as `needs-update`, read the currently-installed version's own `typo3/cms-core` constraint** — a recent release may already declare the target major (an installed `^12 || ^13 || ^14` constraint is already target-ready, no bump needed). Check tags AND dev-branches on Packagist (`repo.packagist.org/p2/<vendor>/<pkg>.json` and `…/<pkg>~dev.json`). A dependency with neither a tag nor a dev-branch above the current major is a genuine blocker, not a bump — and if the project owns a custom extension that depends on it, that custom extension is blocked too.
+
 ## Phase 4 — Custom Code Analysis
 
 Scan custom code for breaking-change triggers. Each trigger maps to a multiplier in `risk-multipliers.md`:
@@ -61,6 +65,8 @@ grep -rln "list_type\|is_static\|eval=.*year" Configuration/TCA/
 ```
 
 Output: counts per trigger across the codebase.
+
+**The greps yield trigger *candidates*, not confirmed multipliers — verify the semantics before applying a multiplier in Phase 5.** A `findBy*` match may be a self-defined repository method using `createQuery()`, not an Extbase magic finder (the magic-finder removal does not apply to it). A `concatenate*` match alongside an already-present build tool (Vite/webpack) is a config migration, not a tooling introduction. Open each hit and confirm it is the construct the multiplier targets; drop the false positives.
 
 ## Phase 5 — Risk Level Calculation
 
