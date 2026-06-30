@@ -2,10 +2,10 @@
 
 When a project uses `fluidtypo3/flux` (usually with `fluidtypo3/vhs`) for content elements, factor this in as a dedicated cost block. As of mid-2026 neither library has a stable TYPO3 v14 release, but they differ on roadmap, so check both on Packagist at estimate time:
 
-- **Flux** has active v14 development: `dev-development` and `dev-feature/v14` declare `^12 || ^13 || ^14.3` (as of 2026-06-18). A stable Flux v14 may therefore land, which would make a Flux fork-lead unnecessary.
+- **Flux** has active v14 development: `dev-development` and `dev-feature/v14` declare `^12 || ^13 || ^14.3` (as of 2026-06-18). A stable Flux v14 may therefore land, which would make a Flux fork unnecessary.
 - **VHS** has no v14 even on its dev branches (`dev-development` is still `^12 || ^13` as of 2026-06-30) and is the harder blocker.
 
-Until a stable v14 of the library actually in use exists, an upgrade to v14 forces either a fork-lead of the missing library (VHS in particular) or a migration of the content to `friendsoftypo3/content-blocks` (+ `b13/container` for grid elements). The migration path below stays the safe planning assumption.
+Until a stable v14 of the library actually in use exists, an upgrade to v14 forces either a custom fork of the missing library (VHS in particular) or a migration of the content to `friendsoftypo3/content-blocks` (+ `b13/container` for grid elements). The migration path below stays the safe planning assumption.
 
 ## Measure the effort-driving dimension
 
@@ -43,4 +43,10 @@ Documented tool limits: section fields only with one child type (else `Unsupport
 
 ## Estimate impact
 
-The tool removes most of the data migration and field-element modelling, but the following stay manual and belong in the delta: VHS ViewHelper replacement (no tool covers VHS — map to Core equivalents plus a custom rebuild of FAL / math / page helpers), the per-container registration (a `ContainerConfiguration` registered via the b13 `Registry` in `Configuration/TCA/Overrides/tt_content.php`) + `ContainerProcessor` TypoScript + frontend template, and the multi-child sections. Keep the Flux-migration delta in the middle of its range until a verification spike on a v13 copy confirms the Flux provider covers the project's actual grid/section structures. The whole tool path is bound to the v13 window — if v13 is skipped, the content rebuild becomes fully manual (upper-end driver).
+The tool removes most of the data migration and field-element modelling, but the following stay manual and belong in the delta:
+
+- **VHS ViewHelper replacement:** no tool covers VHS, map to Core equivalents plus a custom rebuild of FAL / math / page helpers.
+- **Per-container registration:** a `ContainerConfiguration` registered via the b13 `Registry` in `Configuration/TCA/Overrides/tt_content.php`, plus `ContainerProcessor` TypoScript and the frontend template.
+- **Multi-child sections.**
+
+Keep the Flux-migration delta in the middle of its range until a verification spike on a v13 copy confirms the Flux provider covers the project's actual grid/section structures. The whole tool path is bound to the v13 window. If v13 is skipped, the content rebuild becomes fully manual (upper-end driver).
