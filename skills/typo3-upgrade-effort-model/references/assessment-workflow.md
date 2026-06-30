@@ -9,8 +9,10 @@ Generic command-level workflow for producing an upgrade estimate. Independent of
 composer show typo3/cms-core | grep versions
 php --version
 
-# Extension inventory
-composer show --installed --format json | jq -r '.installed[].name' | grep -E '^(typo3/|<vendor>/)' | sort
+# Extension inventory — full installed set, every vendor (classify in Phase 2)
+composer show --installed --format json | jq -r '.installed[].name' | sort
+# extensions only (by package type), any vendor:
+jq -r '.packages[] | select(.type | test("typo3-cms")) | .name' composer.lock | sort
 
 # Build tooling
 ls -la package.json vite.config.* webpack.config.* gulpfile.* 2>/dev/null
