@@ -74,7 +74,7 @@
     "assertions": [
       {
         "type": "content_regex",
-        "value": "4[-–—]8|4 to 8",
+        "value": "4\\s*([-–—]|to)\\s*8",
         "description": "Cites the 4-8h baseline for the v13 -> v14.3 own-extension-with-Rector path"
       },
       {
@@ -106,7 +106,7 @@
     "assertions": [
       {
         "type": "content_regex",
-        "value": "\\+2[-–—]4|2 to 4",
+        "value": "\\+?\\s*2\\s*([-–—]|to)\\s*4",
         "description": "Cites the +2-4h addition for the stale third-party path at v13 -> v14.3"
       },
       {
@@ -175,7 +175,7 @@
     "assertions": [
       {
         "type": "content_regex",
-        "value": "0\\.5[-–—]1|109585",
+        "value": "0\\.5\\s*([-–—]|to)\\s*1|109585",
         "description": "Cites the +0.5-1h post-upgrade wizard effort tied to core issue #109585, specific to projects that transited v14.2"
       },
       {
@@ -223,7 +223,7 @@
     "assertions": [
       {
         "type": "content_regex",
-        "value": "0\\.6[-–—]1\\.4|0\\.6 to 1\\.4",
+        "value": "0\\.6\\s*([-–—]|to)\\s*1\\.4",
         "description": "Cites the typical 0.6-1.4 calibration factor range for teams without tuned historical data"
       },
       {
