@@ -209,7 +209,7 @@ Configuration/FlexForms/flexform_tag_list.xml (94 changes)
 
 **Estimation Impact:**
 
-- Effort scales with FlexForm count and the presence of `switchablecontrolleractions` (deprecated, needs removal)
+- Effort scales with FlexForm count and the presence of `switchableControllerActions` (deprecated, needs removal)
 
 ## Testing Infrastructure Modernization
 
@@ -304,7 +304,7 @@ use TYPO3Fluid\Fluid\View\TemplateView;
 
 **Estimation Impact:**
 
-- A namespace-only search & replace, followed by regression testing of affected views
+- Requires a namespace-only search & replace, followed by regression testing of affected views
 
 ## Documentation Updates
 
@@ -319,7 +319,7 @@ use TYPO3Fluid\Fluid\View\TemplateView;
 
 **Estimation Impact:**
 
-- Covers README badges/version info, compatibility-matrix updates, code-example refreshes, and a migration guide for extension users
+- Effort covers README badges/version info, compatibility-matrix updates, code-example refreshes, and a migration guide for extension users
 
 ## Observed Commit Patterns
 
