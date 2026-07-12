@@ -1,0 +1,252 @@
+[
+  {
+    "name": "extension-hours-formula",
+    "prompt": "What's the exact formula this model uses to calculate estimated hours per extension for a TYPO3 LTS upgrade?",
+    "assertions": [
+      {
+        "type": "content_regex",
+        "value": "baseline[^\\n]*(×|x|\\*)[^\\n]*multiplier",
+        "description": "Cites the compound formula: extension_hours = baseline × Π(multipliers) × rector_discount × calibration"
+      },
+      {
+        "type": "content_regex",
+        "value": "rector",
+        "description": "Includes the Rector coverage discount factor in the formula"
+      },
+      {
+        "type": "content_regex",
+        "value": "calibrat",
+        "description": "Includes the team calibration factor in the formula"
+      }
+    ]
+  },
+  {
+    "name": "tsfe-removal-multiplier",
+    "prompt": "An extension in our v13 to v14.3 TYPO3 upgrade reads $GLOBALS['TSFE'] directly. What risk multiplier applies and why?",
+    "assertions": [
+      {
+        "type": "content_contains",
+        "value": "1.3",
+        "description": "Cites the exact x1.3 multiplier for TypoScriptFrontendController removal"
+      },
+      {
+        "type": "content_regex",
+        "value": "TypoScriptFrontendController|TSFE",
+        "description": "Names the removed class as the source of the multiplier"
+      }
+    ]
+  },
+  {
+    "name": "fluid5-strict-vh-multiplier",
+    "prompt": "We have several custom Fluid ViewHelpers without typed arguments. What multiplier does that add for a v14.3 upgrade?",
+    "assertions": [
+      {
+        "type": "content_contains",
+        "value": "1.2",
+        "description": "Cites the exact x1.2 Fluid 5 strict ViewHelper typing multiplier"
+      },
+      {
+        "type": "content_regex",
+        "value": "Fluid 5|LenientArgumentProcessor|typed arg",
+        "description": "Names the specific v14 breaking change driving the multiplier"
+      }
+    ]
+  },
+  {
+    "name": "compound-multipliers-are-multiplicative",
+    "prompt": "This extension triggers both the Fluid 5 strict ViewHelper factor and the TSFE removal factor. Do these two multipliers add together or multiply?",
+    "assertions": [
+      {
+        "type": "content_regex",
+        "value": "multipl(y|ies|icative)",
+        "description": "States multipliers are multiplicative, not additive -- an easy-to-get-wrong modeling detail"
+      },
+      {
+        "type": "content_regex",
+        "value": "1\\.2.*1\\.3|1\\.3.*1\\.2",
+        "description": "References both specific factor values together to show how they compound"
+      }
+    ]
+  },
+  {
+    "name": "v13-to-v14-baseline-hours",
+    "prompt": "Give me a rough hour range for upgrading one of our own extensions (with Rector available) from v13 to v14.3 LTS, before any team calibration is applied.",
+    "assertions": [
+      {
+        "type": "content_regex",
+        "value": "4\\s*([-–—]|to)\\s*8",
+        "description": "Cites the 4-8h baseline for the v13 -> v14.3 own-extension-with-Rector path"
+      },
+      {
+        "type": "content_contains",
+        "value": "calibrat",
+        "description": "Notes the baseline still needs the team calibration multiplier applied"
+      }
+    ]
+  },
+  {
+    "name": "rector-discount-v14",
+    "prompt": "How many Rector rules exist for the TYPO3 v14 migration, and how much time do they save compared to hand-coding the same fixes?",
+    "assertions": [
+      {
+        "type": "content_contains",
+        "value": "47",
+        "description": "Cites the exact count of 47 v14 Rector rules"
+      },
+      {
+        "type": "content_regex",
+        "value": "0\\.8[0-5]?|80.{0,3}85\\s*%",
+        "description": "Cites the x0.80-0.85 auto-fix discount factor"
+      }
+    ]
+  },
+  {
+    "name": "stale-third-party-extra-hours",
+    "prompt": "One of the extensions we depend on for v13 to v14.3 is stale, unmaintained, third-party code with no Rector coverage plan. How does that change the estimate versus our own extensions?",
+    "assertions": [
+      {
+        "type": "content_regex",
+        "value": "\\+?\\s*2\\s*([-–—]|to)\\s*4",
+        "description": "Cites the +2-4h addition for the stale third-party path at v13 -> v14.3"
+      },
+      {
+        "type": "content_regex",
+        "value": "third.?party|stale",
+        "description": "Names the stale/third-party category explicitly"
+      }
+    ]
+  },
+  {
+    "name": "hashservice-removal-multiplier",
+    "prompt": "We call TYPO3's Extbase HashService directly in a few places. What's the risk multiplier for that on a v14.3 upgrade?",
+    "assertions": [
+      {
+        "type": "content_contains",
+        "value": "1.1",
+        "description": "Cites the exact x1.1 HashService removal multiplier"
+      },
+      {
+        "type": "content_contains",
+        "value": "HashService",
+        "description": "Names HashService as the trigger"
+      }
+    ]
+  },
+  {
+    "name": "asset-concat-removal-multiplier",
+    "prompt": "Our site still relies on config.concatenateCss and config.concatenateJs in TypoScript. What does that mean for the v14.3 estimate?",
+    "assertions": [
+      {
+        "type": "content_contains",
+        "value": "1.2",
+        "description": "Cites the exact x1.2 asset concat/compression removal multiplier"
+      },
+      {
+        "type": "content_regex",
+        "value": "Vite|webpack|build tool",
+        "description": "Names the required replacement -- an external build tool"
+      }
+    ]
+  },
+  {
+    "name": "seven-phase-workflow-order",
+    "prompt": "What are the phases of a proper TYPO3 upgrade effort assessment, in order?",
+    "assertions": [
+      {
+        "type": "content_regex",
+        "value": "[Dd]iscovery",
+        "description": "Names Discovery as an early phase"
+      },
+      {
+        "type": "content_regex",
+        "value": "[Cc]lassification",
+        "description": "Names extension Classification as a phase"
+      },
+      {
+        "type": "content_regex",
+        "value": "[Rr]isk",
+        "description": "Names risk calculation as a phase"
+      }
+    ]
+  },
+  {
+    "name": "post-upgrade-wizard-extra-hours",
+    "prompt": "A customer's site sat on v14.2 for a while before we finish the v14.3 upgrade. Is there any extra effort to budget beyond the normal extension work?",
+    "assertions": [
+      {
+        "type": "content_regex",
+        "value": "0\\.5\\s*([-–—]|to)\\s*1|109585",
+        "description": "Cites the +0.5-1h post-upgrade wizard effort tied to core issue #109585, specific to projects that transited v14.2"
+      },
+      {
+        "type": "content_contains",
+        "value": "wizard",
+        "description": "Names the post-upgrade wizard as the source of the extra effort"
+      }
+    ]
+  },
+  {
+    "name": "skip-version-vs-incremental",
+    "prompt": "Should we jump straight from v11 to v14, or go through v12 and v13 first? What does this model help decide?",
+    "assertions": [
+      {
+        "type": "content_regex",
+        "value": "skip.?version",
+        "description": "Names the skip-version decision this model explicitly supports"
+      },
+      {
+        "type": "content_regex",
+        "value": "incremental",
+        "description": "Contrasts against the incremental (step-by-step LTS) path"
+      }
+    ]
+  },
+  {
+    "name": "companion-skill-handoff-for-actual-upgrade",
+    "prompt": "We finished the effort estimate for the v14.3 upgrade -- which skill actually performs the extension code upgrade itself?",
+    "assertions": [
+      {
+        "type": "content_contains",
+        "value": "typo3-extension-upgrade",
+        "description": "Names the companion skill that performs the actual code upgrade; this model is estimation-only"
+      },
+      {
+        "type": "content_regex",
+        "value": "estimat|calibration.?free|this (model|skill)",
+        "description": "Clarifies this skill's own scope is effort estimation, not the upgrade itself"
+      }
+    ]
+  },
+  {
+    "name": "calibration-factor-range",
+    "prompt": "We've never tracked historical upgrade hours before. What calibration factor should we multiply the baseline by?",
+    "assertions": [
+      {
+        "type": "content_regex",
+        "value": "0\\.6\\s*([-–—]|to)\\s*1\\.4",
+        "description": "Cites the typical 0.6-1.4 calibration factor range for teams without tuned historical data"
+      },
+      {
+        "type": "content_contains",
+        "value": "historical",
+        "description": "Recommends deriving the factor from the team's own historical data once available"
+      }
+    ]
+  },
+  {
+    "name": "form-framework-hooks-conditional",
+    "prompt": "Does the EXT:form hook-removal multiplier apply to every extension in our v14.3 upgrade, or only some?",
+    "assertions": [
+      {
+        "type": "content_regex",
+        "value": "only if|only.*(uses|use).*form|conditional",
+        "description": "Correctly scopes the EXT:form hook-removal multiplier to extensions that actually use the form framework, not all extensions"
+      },
+      {
+        "type": "content_regex",
+        "value": "1\\.05|1\\.2",
+        "description": "Cites the x1.05-1.2 range for the EXT:form hook removal factor"
+      }
+    ]
+  }
+]
