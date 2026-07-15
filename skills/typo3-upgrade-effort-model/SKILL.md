@@ -72,4 +72,5 @@ For Netresearch-internal calibration with historical project data, see `coding-a
 - `references/assessment-workflow.md` — command-level workflow
 - `references/rector-coverage.md` — Rector counts and discounts
 - `references/flux-to-content-blocks-migration.md` — Flux/VHS → Content Blocks + b13/container (cost block for Flux-based projects)
+- `references/relaunch-vs-portation.md` — relaunch vs. portation; estimate by work-package
 - `references/upgrade-patterns.md` — case study: georgringer/news v11→v12 upgrade patterns
