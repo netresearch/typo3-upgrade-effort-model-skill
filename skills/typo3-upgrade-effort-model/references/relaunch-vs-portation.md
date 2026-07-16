@@ -52,9 +52,9 @@ underestimator) and *content/CE migration* (see
 
 The theme axis above decides *portation vs. relaunch*. A second, independent axis
 decides how the **core and data** get to the target version: a step-wise
-major-for-major upgrade (vN → vN+1 → … with Rector and the upgrade wizards each
-step, database carried forward) or a **greenfield rebuild** (fresh target-version
-install plus a scripted data migration).
+major-for-major upgrade (one major version at a time, with Rector and the upgrade
+wizards each step, the database carried forward) or a **greenfield rebuild**
+(fresh target-version install plus a scripted data migration).
 
 Estimate BOTH paths in parallel for every project. Never assume one by reflex —
 rough out each, recommend the cheaper/cleaner one, and state why. This also maps
@@ -107,10 +107,10 @@ low/high range per row. A proven raster:
 - performance (responsive/next-gen images), editor comfort (CE preview)
 - design coordination and review loops
 
-Offer two variants when the client has an existing look: A = rebuild the current
-appearance (cheaper build, but accessibility is *more* expensive because contrast
-fixes must be retrofitted into the old design), B = new design (the delta over A
-is almost entirely the separate design package). Note that a pixel-exact rebuild
+Offer two variants when the client has an existing look: Variant A rebuilds the
+current appearance (cheaper build, but accessibility is *more* expensive because
+contrast fixes must be retrofitted into the old design); Variant B is a new design
+(the delta over Variant A is almost entirely the separate design package). Note that a pixel-exact rebuild
 is only possible where the current design already meets the contrast thresholds;
 where it breaks them, WCAG 1.4.3 forces visible colour changes — flag that up
 front.
