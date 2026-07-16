@@ -65,9 +65,10 @@ Rule of thumb for the choice:
 - **Greenfield wins** when almost all custom code is being replaced anyway (a
   foreign theme cluster plus a replaced functional module) AND the content
   elements are re-typed during the move (e.g. onto Content Blocks). The
-  step-wise upgrade's one real benefit — the wizards migrate the DB schema "for
-  free" — is wasted, because the database it carries up is transformed afterwards
-  regardless. You pay twice and drag old cruft along.
+  step-wise upgrade's main free benefit — the wizards migrate the data (records
+  moved, values rewritten, new columns filled; the schema itself is the Database
+  Analyzer's job) — is largely wasted, because the database it carries up is
+  transformed afterwards regardless. You pay twice and drag old cruft along.
 - **Step-wise upgrade wins** when substantial custom code and the content-element
   structure are *kept*, so the wizard trail does real, reusable work — or when
   the data is unusual (workspaces, many custom tables, complex relations) and the
@@ -83,7 +84,8 @@ full data migration", not "greenfield".
 Cost shape: greenfield replaces the core-upgrade line (a small fresh-install
 setup) and shifts the freed effort into data migration. The total lands in the
 same order of magnitude, often slightly *below* the step-wise upgrade because the
-per-major Rector/deprecation overhead disappears.
+per-major Rector/deprecation overhead disappears — an experience heuristic, not a
+guarantee; confirm against your own actuals.
 
 ## Size the sitepackage bottom-up, not with a flat lump
 
@@ -100,7 +102,8 @@ low/high range per row. A proven raster:
   filterable lists)
 - home stage / hero, layout sections (coloured background bands)
 - news list + detail, forms (incl. confirmation mails)
-- accessibility (contrast, keyboard, screen-reader — a legal requirement)
+- accessibility (contrast, keyboard, screen-reader — often a legal requirement,
+  e.g. public sector or providers covered by the EU Accessibility Act)
 - performance (responsive/next-gen images), editor comfort (CE preview)
 - design coordination and review loops
 
@@ -108,7 +111,9 @@ Offer two variants when the client has an existing look: A = rebuild the current
 appearance (cheaper build, but accessibility is *more* expensive because contrast
 fixes must be retrofitted into the old design), B = new design (the delta over A
 is almost entirely the separate design package). Note that a pixel-exact rebuild
-is impossible anyway once accessibility contrast rules apply — say so up front.
+is only possible where the current design already meets the contrast thresholds;
+where it breaks them, WCAG 1.4.3 forces visible colour changes — flag that up
+front.
 
 ## Measure the content-migration base, don't assume it
 
