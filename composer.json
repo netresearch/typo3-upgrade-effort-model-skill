@@ -1,7 +1,17 @@
 {
     "name": "netresearch/typo3-upgrade-effort-model-skill",
-    "description": "AI agent skill: generic TYPO3 LTS upgrade effort model — risk multipliers, breaking-change baselines, version compatibility, Rector coverage adjustments, 7-phase assessment workflow.",
+    "description": "Agent Skill for estimating TYPO3 LTS upgrade effort: risk multipliers, breaking-change baselines, version compatibility, Rector coverage, 7-phase assessment workflow",
     "type": "ai-agent-skill",
+    "keywords": [
+        "typo3",
+        "upgrade",
+        "estimation",
+        "ai-agent",
+        "skill",
+        "rector",
+        "effort-estimation",
+        "lts"
+    ],
     "license": "(MIT AND CC-BY-SA-4.0)",
     "authors": [
         {
