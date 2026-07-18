@@ -9,8 +9,10 @@ Generic command-level workflow for producing an upgrade estimate. Independent of
 composer show typo3/cms-core | grep versions
 php --version
 
-# Extension inventory
-composer show --installed --format json | jq -r '.installed[].name' | grep -E '^(typo3/|<vendor>/)' | sort
+# Extension inventory — full installed set, every vendor (classify in Phase 2)
+composer show --installed --format json | jq -r '.installed[].name' | sort
+# extensions only (by package type), any vendor:
+jq -r '(.packages[]?, .["packages-dev"][]?) | select(.type == "typo3-cms-extension") | .name' composer.lock | sort
 
 # Build tooling
 ls -la package.json vite.config.* webpack.config.* gulpfile.* 2>/dev/null
@@ -21,6 +23,8 @@ ls Configuration/Sets 2>/dev/null
 ```
 
 Output: a table of `extension → current version → category` for every extension.
+
+**Enumerate the full installed set from `composer.lock` (or `composer show --installed`) — never a hand-supplied or ticket-supplied extension list.** A scope list from the request routinely omits extensions (transitive dependencies, sitepackage requirements, starter packages). Every missed extension is either silent effort or a silent compatibility blocker. Cross-check the count against the lockfile before moving on.
 
 ## Phase 2 — Extension Classification
 
@@ -46,6 +50,8 @@ done
 
 Output: per-extension flag (`v14-ready` / `v14-via-fork` / `replace` / `stale-no-replacement`).
 
+**Before flagging an extension as `needs-update`, read the currently-installed version's own `typo3/cms-core` constraint.** A recent release may already declare the target major (an installed `^12 || ^13 || ^14` constraint is already target-ready, no bump needed). Check tags AND dev-branches on Packagist, using lowercase vendor/package names (an uppercase name 404s): `repo.packagist.org/p2/<vendor>/<pkg>.json` and `repo.packagist.org/p2/<vendor>/<pkg>~dev.json`. A dependency with neither a tag nor a dev-branch supporting the target major is a genuine blocker, not a bump. If the project owns a custom extension that depends on it, that custom extension is blocked too.
+
 ## Phase 4 — Custom Code Analysis
 
 Scan custom code for breaking-change triggers. Each trigger maps to a multiplier in `risk-multipliers.md`:
@@ -54,13 +60,15 @@ Scan custom code for breaking-change triggers. Each trigger maps to a multiplier
 # v14 triggers
 grep -rln "HashService" Classes/ Configuration/
 grep -rln "\$GLOBALS\['TSFE'\]" Classes/
-grep -rln "findBy[A-Z]" Classes/Domain/Repository/
+grep -E -rln "->(findBy|findOneBy|countBy)[[:upper:]]" Classes/
 find . -name "ext_tables.php" -not -path "./.Build/*"
 grep -rln "config\.concatenateCss\|config\.concatenateJs" Configuration/TypoScript/
 grep -rln "list_type\|is_static\|eval=.*year" Configuration/TCA/
 ```
 
 Output: counts per trigger across the codebase.
+
+**The greps yield trigger *candidates*, not confirmed multipliers. Verify the semantics before applying a multiplier in Phase 5.** A `->findBy*()`/`->findOneBy*()`/`->countBy*()` call is a magic finder only when it resolves through Extbase's `Repository::__call` (removed in v14.0). The same call may instead target a `findBy*` method explicitly defined on the repository (using `createQuery()`), which is a regular method and is unaffected, so confirm the target repository does not define the method before counting it. A `concatenate*` match alongside an already-present build tool (Vite/webpack) is a config migration, not a tooling introduction. Open each hit and confirm it is the construct the multiplier targets; drop the false positives.
 
 ## Phase 5 — Risk Level Calculation
 

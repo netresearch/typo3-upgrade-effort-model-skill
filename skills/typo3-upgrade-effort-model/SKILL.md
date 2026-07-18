@@ -1,8 +1,8 @@
 ---
 name: typo3-upgrade-effort-model
-description: "Use when estimating effort for TYPO3 LTS major version upgrades (current target: v14.3 LTS, released 2026-04-21). Provides risk multipliers (Fluid 5 strict VHs, HashService removal, TSFE removal, asset-concat removal, magic finders, EXT:form), per-extension baselines, version-compatibility matrix, Rector coverage adjustments, 7-phase assessment workflow. Calibration-free; pair with your historical data for tuned estimates."
+description: "Use when estimating effort for TYPO3 LTS major version upgrades (current target: v14.3 LTS, released 2026-04-21). Provides risk multipliers for v14 breaking changes (fact catalog owned by typo3-conformance's v14-deprecations.md), per-extension baselines, version-compatibility matrix, Rector coverage adjustments, 7-phase assessment workflow. Calibration-free; pair with your historical data for tuned estimates."
 metadata:
-  version: "1.1.0"
+  version: "1.3.1"
 ---
 
 # TYPO3 Upgrade Effort Model
@@ -72,3 +72,5 @@ For Netresearch-internal calibration with historical project data, see `coding-a
 - `references/assessment-workflow.md` — command-level workflow
 - `references/rector-coverage.md` — Rector counts and discounts
 - `references/flux-to-content-blocks-migration.md` — Flux/VHS → Content Blocks + b13/container (cost block for Flux-based projects)
+- `references/relaunch-vs-portation.md` — relaunch vs. portation; estimate by work-package
+- `references/upgrade-patterns.md` — case study: georgringer/news v11→v12 upgrade patterns
