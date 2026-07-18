@@ -54,4 +54,4 @@
 - **PHP**: 7.2/7.4 → 8.1+ (major jump)
 - **Cumulative Changes**: All v10, v11, v12 breaking changes apply
 - **Extension Impact**: High (cumulative), but single effort vs 3 separate upgrades
-- **Timeline**: Comparable to single upgrade (6 months) per MFAG validation
+- **Timeline**: Comparable to a single upgrade (~6 months), as observed on a real skip-version project
