@@ -1,0 +1,384 @@
+[
+  {
+    "name": "multipliers-compound-multiplicatively",
+    "prompt": "Estimate the upgrade effort for one of our own TYPO3 extensions going from v13 to v14.3. It uses $GLOBALS['TSFE'] in two places, ships three custom ViewHelpers with untyped arguments, and its TypoScript sets config.concatenateCss = 1. Rector is available. Show the calculation.",
+    "assertions": [
+      {
+        "type": "content_regex",
+        "value": "1\\.3",
+        "description": "Applies the TypoScriptFrontendController-removal multiplier of 1.3"
+      },
+      {
+        "type": "content_regex",
+        "value": "1\\.2",
+        "description": "Applies the Fluid 5 strict-typing and asset-concat multipliers of 1.2"
+      },
+      {
+        "type": "content_regex",
+        "value": "(?i)multiplicative|multiply|compound|product|×.*×|\\*.*\\*",
+        "description": "Compounds the factors multiplicatively rather than adding them"
+      },
+      {
+        "type": "content_regex",
+        "value": "0\\.8[05]?",
+        "description": "Applies the Rector auto-fix discount of 0.80-0.85 after the factor multipliers"
+      },
+      {
+        "type": "content_regex",
+        "value": "4.{0,4}(-|–|to).{0,4}8|baseline",
+        "description": "Starts from the documented v13 to v14.3 baseline of 4-8 hours per own extension"
+      }
+    ],
+    "samples": {
+      "passing": "Baseline for an own extension on v13 → v14.3 is 4–8 h. Three factors apply and they are multiplicative: TSFE removal × 1.3, Fluid 5 strict VH typing × 1.2, asset-concat removal × 1.2, so the product is 1.87. Then apply the Rector discount × 0.80–0.85. That gives roughly 6–13 h before your team calibration factor.",
+      "failing": [
+        "Add the factors up: 1.3 + 1.2 + 1.2 means about 3.7 times the baseline, so 15–30 hours.",
+        "Roughly two days per extension. TYPO3 upgrades are hard to quantify, so add a generous buffer and re-estimate later."
+      ]
+    }
+  },
+  {
+    "name": "calibration-is-not-a-multiplier",
+    "prompt": "Your model gives 4-8 hours per own extension for v13 to v14.3. Our team is consistently faster than that. Do we add a 0.7 factor to the risk multiplier table?",
+    "assertions": [
+      {
+        "type": "content_regex",
+        "value": "(?i)calibration",
+        "description": "Names team speed as calibration rather than a risk factor"
+      },
+      {
+        "type": "content_regex",
+        "value": "(?i)(not|never) a (risk )?multiplier|separate|external|overlay|own (skill|data)",
+        "description": "Keeps calibration out of the multiplier table, in a team-specific overlay"
+      },
+      {
+        "type": "content_regex",
+        "value": "0\\.6|1\\.4|objective|regardless of team",
+        "description": "Explains the split: factors are objective trigger conditions, calibration is team-specific (typically 0.6-1.4)"
+      }
+    ],
+    "samples": {
+      "passing": "No — keep it out of the multiplier table. A risk multiplier applies when a trigger condition matches, objectively and regardless of team. How fast your team works at the same factor count is calibration, typically 0.6–1.4, and it belongs in a thin team overlay skill that imports this model.",
+      "failing": [
+        "Yes, add a 0.7 team-speed multiplier to references/risk-multipliers.md alongside the other factors.",
+        "Just lower the baselines in the table to 3–6 hours so the numbers match what you observe."
+      ]
+    }
+  },
+  {
+    "name": "v14-target-is-14-3-not-14-0",
+    "prompt": "We are planning a TYPO3 v14 upgrade. Which v14 version should we target, and how large is the breaking-change cycle?",
+    "assertions": [
+      {
+        "type": "content_regex",
+        "value": "14\\.3",
+        "description": "Targets v14.3, the LTS release"
+      },
+      {
+        "type": "content_regex",
+        "value": "(?i)14\\.0.{0,10}14\\.2|sprint|unsupported|not supported",
+        "description": "Rules out 14.0-14.2 as unsupported sprint releases"
+      },
+      {
+        "type": "content_regex",
+        "value": "98",
+        "description": "Quantifies the cycle with the documented 98 breaking-change entries"
+      },
+      {
+        "type": "content_regex",
+        "value": "31|deprecat",
+        "description": "Names the 31 deprecation entries alongside the breaking ones"
+      }
+    ],
+    "samples": {
+      "passing": "Target v14.3 LTS, released 2026-04-21. Sprint releases 14.0–14.2 are unsupported. The cycle is the largest in years: 98 breaking and 31 deprecation entries, all landed in v14.0.",
+      "failing": [
+        "Target 14.0 — it is the first v14 release, so you get the longest runway before 15 arrives.",
+        "Any v14 release will do; the breaking changes are spread evenly across the 14.x line."
+      ]
+    }
+  },
+  {
+    "name": "rector-count-and-discount-v14",
+    "prompt": "How much does typo3-rector help with a v14 migration, and how do I express that in an estimate?",
+    "assertions": [
+      {
+        "type": "content_regex",
+        "value": "47",
+        "description": "States the 47 v14-specific Rector rules"
+      },
+      {
+        "type": "content_regex",
+        "value": "0\\.8[05]?",
+        "description": "Applies it as a 0.80-0.85 discount rather than as a percentage saved"
+      },
+      {
+        "type": "content_regex",
+        "value": "(?i)(verif|test|review)",
+        "description": "States that the discount covers mechanical edits, not verification"
+      }
+    ]
+  },
+  {
+    "name": "php-first-then-typo3",
+    "prompt": "We are on TYPO3 12.4 with PHP 8.1 and want to reach 13.4 with PHP 8.4. In which order should we move?",
+    "assertions": [
+      {
+        "type": "content_regex",
+        "value": "(?i)PHP first|php.{0,40}before.{0,20}TYPO3|first.{0,30}PHP",
+        "description": "Raises PHP before the TYPO3 major"
+      },
+      {
+        "type": "content_regex",
+        "value": "8\\.4",
+        "description": "Names 8.4 as reachable on the current 12.4 already"
+      },
+      {
+        "type": "content_regex",
+        "value": "(?i)isolat|separat|which|debug|attribut",
+        "description": "Gives the reason: it isolates PHP failures from TYPO3 failures during debugging"
+      }
+    ],
+    "samples": {
+      "passing": "Raise PHP first: 12.4 already supports 8.4, so move to 8.4 on 12.4, test there, fix the PHP-level failures (undefined array keys above all), and only then upgrade TYPO3 to 13.4. That isolates 'is this PHP or TYPO3?' while debugging instead of leaving both variables in play.",
+      "failing": [
+        "Upgrade TYPO3 to 13.4 first, then raise PHP to 8.4 afterwards — 13.4 supports 8.2 so the old PHP is fine during the upgrade.",
+        "Do both in the same deployment to save a release cycle."
+      ]
+    }
+  },
+  {
+    "name": "core-extensions-cost-zero",
+    "prompt": "Our composer.json lists 31 typo3/cms-* packages. How many hours do those add to a v14 upgrade estimate?",
+    "assertions": [
+      {
+        "type": "content_regex",
+        "value": "(?i)0 ?(hours|h)\\b|zero|no (extra |additional )?(hours|effort)",
+        "description": "Estimates core extensions at zero hours"
+      },
+      {
+        "type": "content_regex",
+        "value": "(?i)core|handled by",
+        "description": "Explains that core packages move with the core release"
+      },
+      {
+        "type": "content_regex",
+        "value": "(?i)(low|LOW) risk|classif",
+        "description": "Classifies them rather than estimating them individually"
+      }
+    ]
+  },
+  {
+    "name": "stale-third-party-options-and-range",
+    "prompt": "One of our extensions is a public third-party package on Packagist with no release for the target TYPO3 version. How do we estimate it and what are our options?",
+    "assertions": [
+      {
+        "type": "content_regex",
+        "value": "4.{0,4}(-|–|to).{0,4}12",
+        "description": "Uses the documented 4-12 hour range for a stale third-party extension"
+      },
+      {
+        "type": "content_regex",
+        "value": "(?i)fork",
+        "description": "Names forking as an option"
+      },
+      {
+        "type": "content_regex",
+        "value": "(?i)(upstream|PR|pull request)",
+        "description": "Prefers fork plus upstream patch over maintaining a local fork forever"
+      },
+      {
+        "type": "content_regex",
+        "value": "(?i)replac|alternative",
+        "description": "Names replacement as the highest-effort option that can invalidate the timeline"
+      }
+    ]
+  },
+  {
+    "name": "trigger-detection-is-a-grep",
+    "prompt": "How do I decide which v14 risk multipliers apply to a given extension? I do not want to read every file.",
+    "assertions": [
+      {
+        "type": "content_regex",
+        "value": "(?i)grep|rg\\b|search",
+        "description": "Decides each factor by a mechanical search rather than by judgement"
+      },
+      {
+        "type": "content_regex",
+        "value": "TSFE|findBy|list_type|HashService|concatenateCss|ext_tables",
+        "description": "Names at least one concrete trigger token from the multiplier table"
+      },
+      {
+        "type": "content_regex",
+        "value": "(?i)trigger|condition|matches",
+        "description": "Frames a multiplier as applying when its trigger condition matches"
+      }
+    ]
+  },
+  {
+    "name": "post-upgrade-wizard-only-if-transited",
+    "prompt": "Does our v13 to v14.3 estimate need extra time for the be_users credential-data upgrade wizard?",
+    "assertions": [
+      {
+        "type": "content_regex",
+        "value": "109585",
+        "description": "Identifies the change by number"
+      },
+      {
+        "type": "content_regex",
+        "value": "0\\.5|1 ?h",
+        "description": "Prices it at the documented +0.5-1 hour"
+      },
+      {
+        "type": "content_regex",
+        "value": "(?i)14\\.2|(only|if).{0,40}transit|passed through",
+        "description": "Applies it conditionally: only if the project transited through v14.2"
+      }
+    ],
+    "samples": {
+      "passing": "Only if the project actually transited through v14.2 — then add +0.5–1 h for the #109585 be_users credential-data wizard. A direct v13 → v14.3 path does not need it.",
+      "failing": [
+        "Yes, always add a day for post-upgrade wizards; every v14 upgrade needs the #109585 wizard.",
+        "No, upgrade wizards never take measurable time and do not belong in an estimate."
+      ]
+    }
+  },
+  {
+    "name": "skip-version-cumulative-not-triple",
+    "prompt": "We are on TYPO3 11.5. Is it cheaper to go 11 to 12 to 13 to 14, or straight to 14.3?",
+    "assertions": [
+      {
+        "type": "content_regex",
+        "value": "(?i)cumulative",
+        "description": "States that all intermediate breaking changes still apply"
+      },
+      {
+        "type": "content_regex",
+        "value": "(?i)(single|one) (effort|upgrade|pass)|comparable|not.{0,20}(three|3)(×| times)",
+        "description": "States that the skip path is a single effort rather than the sum of three upgrades"
+      },
+      {
+        "type": "content_regex",
+        "value": "(?i)(test|verif|validat|gate)",
+        "description": "Notes that the saving comes from testing and release cycles done once"
+      }
+    ]
+  },
+  {
+    "name": "conformance-score-feeds-the-estimate",
+    "prompt": "Which other skills should I involve when estimating a TYPO3 upgrade, and what does each contribute?",
+    "assertions": [
+      {
+        "type": "content_regex",
+        "value": "typo3-conformance",
+        "description": "Names the conformance skill as the quality input"
+      },
+      {
+        "type": "content_regex",
+        "value": "typo3-extension-upgrade|typo3-project-upgrade",
+        "description": "Separates estimation from the skills that perform the upgrade"
+      },
+      {
+        "type": "content_regex",
+        "value": "(?i)(feeds|input|multiplier|risk)",
+        "description": "States that the conformance result feeds the risk multiplier rather than being a separate estimate"
+      }
+    ]
+  },
+  {
+    "name": "estimation-formula-order-of-operations",
+    "prompt": "Write out the per-extension estimation formula this model uses.",
+    "assertions": [
+      {
+        "type": "content_regex",
+        "value": "(?i)baseline",
+        "description": "Starts from the per-path baseline"
+      },
+      {
+        "type": "content_regex",
+        "value": "(?i)rector",
+        "description": "Includes the Rector discount"
+      },
+      {
+        "type": "content_regex",
+        "value": "(?i)calibration",
+        "description": "Includes the team calibration factor as the last term"
+      },
+      {
+        "type": "content_regex",
+        "value": "(?i)multipli",
+        "description": "Includes the product of the applicable risk multipliers"
+      }
+    ],
+    "samples": {
+      "passing": "extension_hours = baseline × Π(risk multipliers) × rector_discount × calibration. Baseline comes from the upgrade path, the multipliers compound, the Rector discount lands after them, and the team calibration factor is applied last.",
+      "failing": [
+        "hours = number of extensions × 8. Multipliers and Rector coverage are too project-specific to model.",
+        "Take the baseline and add the multipliers and the Rector discount as percentages on top."
+      ]
+    }
+  },
+  {
+    "name": "version-matrix-php-bounds",
+    "prompt": "Which PHP versions do TYPO3 12.4 and 13.4 support?",
+    "assertions": [
+      {
+        "type": "content_regex",
+        "value": "8\\.1",
+        "description": "Names 8.1 as the 12.4 minimum"
+      },
+      {
+        "type": "content_regex",
+        "value": "8\\.2",
+        "description": "Names 8.2 as the 13.4 minimum"
+      },
+      {
+        "type": "content_regex",
+        "value": "8\\.4",
+        "description": "Names 8.4 as the upper bound for both"
+      }
+    ]
+  },
+  {
+    "name": "ext-tables-and-ckeditor-small-factors",
+    "prompt": "An extension still has an ext_tables.php and configures an RTE preset. What does that do to the v14 estimate?",
+    "assertions": [
+      {
+        "type": "content_regex",
+        "value": "1\\.05",
+        "description": "Applies the small 1.05 factors rather than treating either as a major cost"
+      },
+      {
+        "type": "content_regex",
+        "value": "109438|Configuration/Backend|Modules\\.php|Routes\\.php",
+        "description": "Names what ext_tables.php splits into, or the deprecation number"
+      },
+      {
+        "type": "content_regex",
+        "value": "106964|prefers-color-scheme|dark",
+        "description": "Names the CKEditor 5 context-aware default as the RTE-side cost"
+      }
+    ]
+  },
+  {
+    "name": "model-is-calibration-free-by-design",
+    "prompt": "Why does this model not just give us one number per extension?",
+    "assertions": [
+      {
+        "type": "content_regex",
+        "value": "(?i)calibration",
+        "description": "Explains that the per-team speed factor is deliberately external"
+      },
+      {
+        "type": "content_regex",
+        "value": "(?i)(what makes|objective|breaking|coverage|ecosystem)",
+        "description": "Separates what makes an upgrade hard from how fast a team handles it"
+      },
+      {
+        "type": "content_regex",
+        "value": "(?i)(historical|your (own )?(data|projects)|overlay)",
+        "description": "Points at the team's own historical data as the missing term"
+      }
+    ]
+  }
+]

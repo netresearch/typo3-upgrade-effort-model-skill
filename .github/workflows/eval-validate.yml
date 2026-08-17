@@ -1,0 +1,17 @@
+name: Eval Validation
+
+# Structural validation of evals/evals.json via the shared skill-repo-skill
+# reusable. Without this job the eval file is only ever checked by hand, and a
+# broken pattern would first misbehave wherever the evals are actually graded.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  eval-validate:
+    uses: netresearch/skill-repo-skill/.github/workflows/eval-validate.yml@main
