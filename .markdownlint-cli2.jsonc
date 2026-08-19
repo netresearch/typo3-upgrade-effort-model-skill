@@ -1,0 +1,13 @@
+{
+  // markdownlint-cli2 config. The pre-commit hook ran without one, so this
+  // repo inherited the full default ruleset while every sibling skill repo
+  // ships its own disables — the effect was invisible because the hook only
+  // sees files a commit touches, and these references are rarely edited.
+  // Measured over all *.md here: MD013 x103, MD060 x64, MD040 x13, nothing
+  // else. Each is a deliberate convention rather than a defect:
+  "config": {
+    "MD013": false, // line-length: the reference tables are wide by design
+    "MD040": false, // fenced-code-language: some blocks are formula/output, not a language
+    "MD060": false  // table-column-style: a new rule; every table here predates it
+  }
+}

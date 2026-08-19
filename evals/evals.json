@@ -248,5 +248,153 @@
         "description": "Cites the x1.05-1.2 range for the EXT:form hook removal factor"
       }
     ]
+  },
+  {
+    "name": "php-moves-before-the-typo3-major",
+    "prompt": "We are on TYPO3 12.4 with PHP 8.1 and want to reach 13.4 with PHP 8.4. In which order should we move, and why that order?",
+    "assertions": [
+      {
+        "type": "content_regex",
+        "value": "(?i)PHP first|php[^\\n]{0,40}before[^\\n]{0,20}TYPO3|first[^\\n]{0,30}PHP",
+        "description": "Raises PHP before the TYPO3 major rather than in the same step"
+      },
+      {
+        "type": "content_regex",
+        "value": "8\\.4",
+        "description": "Names 8.4 as already reachable on the current 12.4, so the PHP step needs no TYPO3 change"
+      },
+      {
+        "type": "content_regex",
+        "value": "(?i)isolat|one (cause|variable)|which of the two|separat",
+        "description": "Gives the reason: a failure then has one candidate cause instead of two"
+      },
+      {
+        "type": "content_regex",
+        "value": "(?i)(undefined array key|array key|deprecat)",
+        "description": "Names the class of failure the PHP step surfaces on its own"
+      }
+    ],
+    "samples": {
+      "passing": "Raise PHP first: 12.4 already supports 8.4, so move to 8.4 on 12.4, test there and fix the PHP-level failures — undefined array keys above all — and only then upgrade TYPO3 to 13.4. That isolates 'is this PHP or TYPO3?' while debugging instead of leaving both variables in play.",
+      "failing": [
+        "Upgrade TYPO3 to 13.4 first and raise PHP afterwards; 13.4 supports 8.2, so the old PHP is fine during the upgrade.",
+        "Do both in one deployment to save a release cycle."
+      ]
+    }
+  },
+  {
+    "name": "php-support-bounds-per-lts",
+    "prompt": "Which PHP versions do TYPO3 13.4 and 14.3 support, and does a 13.4 to 14.3 upgrade force a PHP move?",
+    "assertions": [
+      {
+        "type": "content_regex",
+        "value": "8\\.2",
+        "description": "Names 8.2 as the minimum for both"
+      },
+      {
+        "type": "content_regex",
+        "value": "8\\.5",
+        "description": "Names 8.5 as the current upper bound for both"
+      },
+      {
+        "type": "content_regex",
+        "value": "(?i)(no|not|without)[^\\n]{0,40}(move|change|raise|bump)|same range|unchanged|both",
+        "description": "States that the two ranges coincide, so the TYPO3 step does not force a PHP step"
+      }
+    ],
+    "samples": {
+      "passing": "Both support 8.2 through 8.5. The ranges coincide, so a 13.4 to 14.3 upgrade needs no PHP move — take 8.5 as a separate step afterwards if you want it.",
+      "failing": [
+        "13.4 supports 8.2 to 8.4 and 14.3 requires at least 8.3, so you have to raise PHP as part of the upgrade.",
+        "TYPO3 14 requires PHP 8.5, so plan the PHP upgrade first."
+      ]
+    }
+  },
+  {
+    "name": "core-extensions-cost-zero-hours",
+    "prompt": "Our composer.json lists 31 typo3/cms-* packages plus 12 third-party extensions. How many of the 43 do I put hours on for a v14 upgrade?",
+    "assertions": [
+      {
+        "type": "content_regex",
+        "value": "(?i)0 ?(hours|h)\\b|zero|no (extra |additional )?(hours|effort)",
+        "description": "Prices the core packages at zero hours instead of per-package"
+      },
+      {
+        "type": "content_regex",
+        "value": "12",
+        "description": "Estimates only the 12 third-party extensions"
+      },
+      {
+        "type": "content_regex",
+        "value": "(?i)(core|moves? with|handled by|composer bump)",
+        "description": "Explains why: core packages move with the core release itself"
+      }
+    ],
+    "samples": {
+      "passing": "Only the 12 third-party ones. The 31 typo3/cms-* packages are classified LOW / 0 h — they move with the core release, so they are a composer constraint bump and nothing else.",
+      "failing": [
+        "All 43 need to be assessed individually; budget a couple of hours each, so roughly 90 hours for the extension work.",
+        "Core extensions are the riskiest part of a major upgrade — estimate them first."
+      ]
+    }
+  },
+  {
+    "name": "magic-finder-trigger-is-a-call-site-not-a-method-name",
+    "prompt": "I grepped an extension for findBy and got 14 hits. Its repository defines findByCategory() itself using createQuery(). Does the magic-finder multiplier apply, and how should I have decided?",
+    "assertions": [
+      {
+        "type": "content_regex",
+        "value": "(?i)unaffected|not affected|(does not|doesn't|\\bno\\b)[^\\n]{0,80}(apply|count|affect)",
+        "description": "Does not apply the multiplier to a self-defined repository method"
+      },
+      {
+        "type": "content_regex",
+        "value": "(?i)(__call|magic)",
+        "description": "Ties the multiplier to Extbase's __call magic finders, which is what v14 removed"
+      },
+      {
+        "type": "content_regex",
+        "value": "(?i)(call site|createQuery|self-defined|own method|declared)",
+        "description": "Distinguishes a call site relying on __call from a method the repository declares itself"
+      },
+      {
+        "type": "content_regex",
+        "value": "1\\.1",
+        "description": "Names the multiplier that would apply if the trigger did match"
+      }
+    ],
+    "samples": {
+      "passing": "No. The x1.1 factor covers Extbase's __call magic finders, which v14.0 removed. A repository method the class declares itself and implements with createQuery() is ordinary code and unaffected, so 14 grep hits on the name prove nothing — the trigger is a call site that relies on __call, which means checking whether the method exists before counting it.",
+      "failing": [
+        "Yes, 14 findBy hits means the magic-finder multiplier applies; use x1.1.",
+        "Grep for findBy and multiply by 1.1 per extension that has any hit; Rector fixes them anyway."
+      ]
+    }
+  },
+  {
+    "name": "small-factors-ext-tables-and-ckeditor",
+    "prompt": "An extension still ships an ext_tables.php and registers an RTE preset. What do those two do to a v14 estimate?",
+    "assertions": [
+      {
+        "type": "content_regex",
+        "value": "1\\.05",
+        "description": "Applies the small 1.05 factors rather than treating either as a major cost"
+      },
+      {
+        "type": "content_regex",
+        "value": "109438|Configuration/Backend|Modules\\.php|Routes\\.php",
+        "description": "Names what ext_tables.php splits into, or the deprecation number"
+      },
+      {
+        "type": "content_regex",
+        "value": "106964|prefers-color-scheme|dark",
+        "description": "Names the CKEditor 5 context-aware default as the RTE-side cost"
+      },
+      {
+        "type": "content_regex",
+        "value": "(?i)(multiplicative|multiply|compound|1\\.1)",
+        "description": "Compounds the two rather than adding them"
+      }
+    ]
   }
 ]
