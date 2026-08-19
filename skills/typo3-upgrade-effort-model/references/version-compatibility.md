@@ -1,15 +1,31 @@
 # TYPO3/PHP Version Compatibility Matrix
 
-## Hard-Coded TYPO3/PHP Support Matrix
+## TYPO3/PHP Support Matrix
 
-**Reference for all upgrade estimations:**
+**Reference for all upgrade estimations.** The PHP ranges are what an estimate
+needs at hand; the support *phase* is not restated here beyond active-vs-ELTS,
+because that moves without any release touching this file. Canonical owner of
+both: the [TYPO3 roadmap](https://typo3.com/typo3-cms/development-roadmap/roadmap)
+— re-read it when a new LTS appears, and correct this table in the same pass.
 
-| TYPO3 Version | Min PHP | Max PHP | Supported PHP Versions | Status |
-|---------------|---------|---------|------------------------|--------|
+| TYPO3 Version | Min PHP | Max PHP | Supported PHP Versions | Phase |
+|---------------|---------|---------|------------------------|-------|
 | 10.4 LTS | 7.2 | 7.4 | 7.2, 7.3, 7.4 | ELTS only |
 | 11.5 LTS | 7.4 | 8.3 | 7.4, 8.0, 8.1, 8.2, 8.3 | ELTS only |
-| 12.4 LTS | 8.1 | 8.4 | 8.1, 8.2, 8.3, 8.4 | Active (until Apr 2026) |
-| 13.4 LTS | 8.2 | 8.4 | 8.2, 8.3, 8.4 | Active (until Dec 2027) |
+| 12.4 LTS | 8.1 | 8.4 | 8.1, 8.2, 8.3, 8.4 | ELTS only |
+| 13.4 LTS | 8.2 | 8.5 | 8.2, 8.3, 8.4, 8.5 | Active |
+| **14.3 LTS** | 8.2 | 8.5 | 8.2, 8.3, 8.4, 8.5 | Active — current target (released 2026-04-21) |
+
+Two consequences for an estimate, both easy to get wrong:
+
+- **12.4 is behind the ELTS wall.** Since the 2026-06-15 security release its
+  fixed versions ship only through the paid ELTS repository and are absent from
+  public Packagist, so a `^12.4` leg in CI resolves to nothing once Composer
+  refuses advisory-flagged packages. A v12 project is therefore not "still
+  supported, upgrade when convenient" — its clock has run out, and that belongs
+  in the timeline argument, not only in the hour count.
+- **13.4 and 14.3 share their PHP range.** The upgrade can be done without
+  moving PHP, which is what makes the ordering rule below cheap on this path.
 
 ## Recommended PHP Target Versions
 
@@ -20,6 +36,7 @@
 | 10.4 → 11.5 | **8.3** | Highest version supported by 11.5, good long-term support |
 | 11.5 → 12.4 | **8.4** | Highest version supported by 12.4, best performance |
 | 12.4 → 13.4 | **8.4** | Already supported in 12.4, smooth transition |
+| 13.4 → 14.3 | **8.4** | Supported by both, so PHP need not move with TYPO3; take 8.5 as a separate step afterwards |
 
 ## PHP Version Upgrade Strategy
 
@@ -48,6 +65,16 @@
 - **PHP**: 8.2 (min) → 8.4 recommended
 - **Major Changes**: File structure (LocalConfiguration.php → settings.php), command names (typo3cms → typo3)
 - **Extension Impact**: High (structural changes affect all projects)
+
+### TYPO3 13 → 14
+
+- **PHP**: 8.2 (min), unchanged from 13.4 — the upgrade does not require moving PHP
+- **Major Changes**: the largest breaking-change cycle in years, all landed in
+  14.0 — `TypoScriptFrontendController` removed, Fluid 5 strict ViewHelper
+  typing, frontend asset concat/compression removed, `HashService` removed,
+  Extbase magic finders removed, `ext_tables.php` deprecated
+- **Extension Impact**: High — see `references/risk-multipliers.md` for the
+  per-factor multipliers; this is the path the model's baselines are built for
 
 ### Skip-Version (v9 → 12)
 
