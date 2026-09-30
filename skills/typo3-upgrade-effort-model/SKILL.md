@@ -1,4 +1,6 @@
 ---
+# SPDX-License-Identifier: CC-BY-SA-4.0
+# SPDX-FileCopyrightText: Netresearch DTT GmbH
 name: typo3-upgrade-effort-model
 description: "Use when estimating effort for TYPO3 LTS major version upgrades (current target: v14.3 LTS, released 2026-04-21). Provides risk multipliers for v14 breaking changes (fact catalog owned by typo3-conformance's v14-deprecations.md), per-extension baselines, version-compatibility matrix, Rector coverage adjustments, 7-phase assessment workflow. Calibration-free; pair with your historical data for tuned estimates."
 metadata:

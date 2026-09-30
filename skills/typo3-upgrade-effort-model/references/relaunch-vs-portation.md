@@ -1,3 +1,5 @@
+<!-- SPDX-License-Identifier: CC-BY-SA-4.0 -->
+<!-- SPDX-FileCopyrightText: Netresearch DTT GmbH -->
 # Relaunch vs. portation of the theme layer (v13/v14)
 
 When the frontend/theme is proprietary or built on libraries with no v14 path,

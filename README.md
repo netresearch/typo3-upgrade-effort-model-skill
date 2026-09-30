@@ -1,3 +1,5 @@
+<!-- SPDX-License-Identifier: CC-BY-SA-4.0 -->
+<!-- SPDX-FileCopyrightText: Netresearch DTT GmbH -->
 # typo3-upgrade-effort-model-skill
 
 Generic effort model for TYPO3 LTS major version upgrades. Provides per-version risk multipliers, breaking-change baselines, version-compatibility matrix, Rector coverage adjustments, and a 7-phase assessment workflow. Calibration-free — pair with your team's historical project data for tuned estimates.

@@ -1,3 +1,5 @@
+<!-- SPDX-License-Identifier: CC-BY-SA-4.0 -->
+<!-- SPDX-FileCopyrightText: Netresearch DTT GmbH -->
 # Rector Coverage by TYPO3 Version
 
 Rector's `ssch/typo3-rector` package ships per-version rule sets. These rules auto-fix mechanical migrations (deprecated method calls, renamed classes, attribute syntax). Use this table to apply a Rector-coverage discount in Phase 5.

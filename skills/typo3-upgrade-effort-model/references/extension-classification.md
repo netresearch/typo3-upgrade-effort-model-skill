@@ -1,3 +1,5 @@
+<!-- SPDX-License-Identifier: CC-BY-SA-4.0 -->
+<!-- SPDX-FileCopyrightText: Netresearch DTT GmbH -->
 # Extension Classification
 
 Generic classification system for TYPO3 extensions. Applies to any TYPO3 project regardless of organisation.

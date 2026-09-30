@@ -1,3 +1,5 @@
+<!-- SPDX-License-Identifier: CC-BY-SA-4.0 -->
+<!-- SPDX-FileCopyrightText: Netresearch DTT GmbH -->
 # TYPO3/PHP Version Compatibility Matrix
 
 ## TYPO3/PHP Support Matrix

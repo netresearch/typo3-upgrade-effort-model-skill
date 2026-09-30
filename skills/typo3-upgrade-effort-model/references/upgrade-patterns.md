@@ -1,3 +1,5 @@
+<!-- SPDX-License-Identifier: CC-BY-SA-4.0 -->
+<!-- SPDX-FileCopyrightText: Netresearch DTT GmbH -->
 # TYPO3 Extension Upgrade Patterns
 
 **Source:** Analyzed from georgringer/news extension upgrade history (TYPO3 10→11→12)

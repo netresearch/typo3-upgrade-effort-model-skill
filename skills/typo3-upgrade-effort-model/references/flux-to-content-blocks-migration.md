@@ -1,3 +1,5 @@
+<!-- SPDX-License-Identifier: CC-BY-SA-4.0 -->
+<!-- SPDX-FileCopyrightText: Netresearch DTT GmbH -->
 # Flux → Content Blocks migration (v13/v14)
 
 When a project uses `fluidtypo3/flux` (usually with `fluidtypo3/vhs`) for content elements, factor this in as a dedicated cost block. As of mid-2026 neither library has a stable TYPO3 v14 release, but they differ on roadmap, so check both on Packagist at estimate time:
