@@ -110,6 +110,7 @@ Checks that run on pull requests in this repository:
 - Skill Validation (`lint.yml`) and Eval Validation (`eval-validate.yml`), described under [Checks](#checks).
 - DCO: every commit carries a `Signed-off-by` trailer.
 - CodeQL default setup (a repository setting, not a workflow file) analyses the GitHub Actions workflows with the extended query suite.
+- CodeRabbit (a GitHub App configured for the organisation, not a workflow file) reviews pull requests and reports a `CodeRabbit` status; it is not a required check.
 - Branch protection on `main` requires Skill Validation, CodeQL `Analyze (actions)` and DCO to pass before a merge; it is not enforced for repository admins.
 - No workflow here runs dependency review, a dependency audit, Opengrep or Betterleaks. Secret detection is GitHub secret scanning with push protection, which is enabled for this repository.
 
