@@ -14,7 +14,7 @@ This document states what users of the typo3-upgrade-effort-model skill can and 
 | Evaluation cases | `evals/evals.json` | No. Prompts and expected answer patterns, validated in CI; not loaded by the skill. |
 | Manifests | `plugin.json`, `.claude-plugin/plugin.json`, `composer.json` | No. Package metadata. |
 
-The skill contains no scripts and no executable program, so a user of the skill runs no code from this repository. Untrusted input is parsed only in CI: on every pull request the workflows here call shared workflows of `netresearch/skill-repo-skill`, which check out the pull request and run linters and validators over its Markdown, YAML and JSON files with `contents: read` (see requirement 5).
+The skill contains no scripts and no executable program, so a user of the skill runs no code from this repository. Two places parse untrusted input. In CI, on every pull request the workflows here call shared workflows of `netresearch/skill-repo-skill`, which check out the pull request and run linters and validators over its Markdown, YAML and JSON files with `contents: read` (see requirement 5). On the user's machine, the commands the references ask for (`jq`, `grep`, Composer, Rector) parse data of the assessed project; they are the user's tools, not code shipped here (see requirement 2 and the limits below).
 
 ## Actors and trust boundaries
 
