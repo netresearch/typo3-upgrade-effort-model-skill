@@ -1,3 +1,5 @@
+<!-- SPDX-License-Identifier: CC-BY-SA-4.0 -->
+<!-- SPDX-FileCopyrightText: Netresearch DTT GmbH -->
 # 7-Phase Assessment Workflow
 
 Generic command-level workflow for producing an upgrade estimate. Independent of the specific project, agency, or LTS pair.
