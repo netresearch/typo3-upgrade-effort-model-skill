@@ -38,7 +38,7 @@ Boundary 1 lies between the skill text and the assessed project: the commands in
 
 ### 1. No executable code of its own
 
-`git ls-files` lists Markdown, JSON, YAML and licence files only; the Skill Validation job finds no shell script and no Python file to lint (`.github/workflows/lint.yml`). The commands the agent is told to run are fenced blocks in `references/assessment-workflow.md` (Phases 1, 3 and 4), `references/rector-coverage.md` ("How to detect Rector applicability") and one inline command in `references/relaunch-vs-portation.md` ("Measure the content-migration base").
+`git ls-files` lists Markdown, JSON, JSONC, YAML and licence files and `.gitignore`; the Skill Validation job finds no shell script and no Python file to lint (`.github/workflows/lint.yml`). The commands the agent is told to run are fenced blocks in `references/assessment-workflow.md` (Phases 1, 3 and 4) and `references/rector-coverage.md` ("How to detect Rector applicability"), two inline commands in `references/relaunch-vs-portation.md` ("Measure the content-migration base"), and three SQL queries and one `grep` inline in `references/flux-to-content-blocks-migration.md`.
 
 ### 2. The workflow asks for no write to the project
 
@@ -46,6 +46,7 @@ Boundary 1 lies between the skill text and the assessed project: the commands in
 - Phase 3 uses `composer info --available` and reads version data from `repo.packagist.org`.
 - `references/rector-coverage.md` runs `vendor/bin/rector process --dry-run`. `--dry-run` reports changes without writing them.
 - `references/relaunch-vs-portation.md` counts pages with `curl` against the site's sitemap or a `SELECT COUNT(*)` query.
+- `references/flux-to-content-blocks-migration.md` counts content elements with `SELECT` queries and searches configuration exports with `grep`.
 - `SKILL.md` and the references contain no `composer require`, `composer update`, `rm` or write-mode Rector command.
 - Read-only does not mean no project code runs: `vendor/bin/rector process --dry-run` loads the project's `rector.php` and installed Rector, and Composer commands may load the project's installed Composer plugins. That code runs with the user's permissions and can have side effects the skill does not control.
 
