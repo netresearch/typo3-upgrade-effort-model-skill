@@ -29,7 +29,7 @@ Boundary 1 lies between the skill text and the assessed project: the commands in
 ## Security requirements
 
 1. The skill contains no executable code of its own; every command it asks the agent to run is visible in the reference text.
-2. The workflow inspects the assessed project and does not change it.
+2. The workflow asks for no command that writes to the assessed project. Some of its commands execute code the project controls, with the user's permissions (see [limits](#what-the-skill-does-not-protect-against)).
 3. The skill asks for, stores and transmits no credentials.
 4. The skill and its releases are delivered unmodified from this repository.
 5. Changes reach `main` only through the checks listed in [README.md](../README.md#governance-and-policies).
@@ -40,13 +40,14 @@ Boundary 1 lies between the skill text and the assessed project: the commands in
 
 `git ls-files` lists Markdown, JSON, YAML and licence files only; the Skill Validation job finds no shell script and no Python file to lint (`.github/workflows/lint.yml`). The commands the agent is told to run are fenced blocks in `references/assessment-workflow.md` (Phases 1, 3 and 4), `references/rector-coverage.md` ("How to detect Rector applicability") and one inline command in `references/relaunch-vs-portation.md` ("Measure the content-migration base").
 
-### 2. The workflow inspects and does not change the project
+### 2. The workflow asks for no write to the project
 
 - Phases 1 and 4 of `references/assessment-workflow.md` use `composer show`, `php --version`, `jq`, `ls`, `find` and `grep`. None of them writes to the project.
 - Phase 3 uses `composer info --available` and reads version data from `repo.packagist.org`.
 - `references/rector-coverage.md` runs `vendor/bin/rector process --dry-run`. `--dry-run` reports changes without writing them.
 - `references/relaunch-vs-portation.md` counts pages with `curl` against the site's sitemap or a `SELECT COUNT(*)` query.
 - `SKILL.md` and the references contain no `composer require`, `composer update`, `rm` or write-mode Rector command.
+- Read-only does not mean no project code runs: `vendor/bin/rector process --dry-run` loads the project's `rector.php` and installed Rector, and Composer commands may load the project's installed Composer plugins. That code runs with the user's permissions and can have side effects the skill does not control.
 
 ### 3. No credentials
 
@@ -66,7 +67,7 @@ Boundary 1 lies between the skill text and the assessed project: the commands in
 | Weakness | Where it could arise | Countermeasure |
 |----------|---------------------|----------------|
 | CWE-78 OS command injection | Shell commands in the references | The placeholders (`<vendor>`, `[site]`) are filled in by the user or agent for their own project. The one loop that reuses project data (Phase 3 in `references/assessment-workflow.md`) passes each Composer package name to `composer info` as a quoted argument; no command string is evaluated. |
-| CWE-94 code injection | Project code executed during assessment | Only `vendor/bin/rector process --dry-run` executes project code (see limits below); everything else reads files or queries package metadata. |
+| CWE-94 code injection | Project code executed during assessment | `vendor/bin/rector process --dry-run` executes the project's Rector configuration, and Composer commands may load the project's installed Composer plugins; the other commands read files, query a database or query package metadata. The skill cannot contain what that project code does, so it warns the user to assess only projects they trust or to use an isolated environment (see limits below). |
 | CWE-798 credential exposure | Commits to this repository | GitHub secret scanning with push protection is enabled for the repository. No file reads or stores credentials. |
 | CWE-829 inclusion of functionality from an untrusted source | CI workflows | The workflows call shared workflows inside the `netresearch` organisation; those pin third-party actions by commit SHA. |
 | CWE-1104 unmaintained third-party components | Composer dependency | The only dependency is `netresearch/composer-agent-skill-plugin` (`composer.json`); Renovate opens update pull requests (`renovate.json`). |
