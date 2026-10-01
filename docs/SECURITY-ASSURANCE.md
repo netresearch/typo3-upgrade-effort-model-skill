@@ -14,7 +14,7 @@ This document states what users of the typo3-upgrade-effort-model skill can and 
 | Evaluation cases | `evals/evals.json` | No. Prompts and expected answer patterns, validated in CI; not loaded by the skill. |
 | Manifests | `plugin.json`, `.claude-plugin/plugin.json`, `composer.json` | No. Package metadata. |
 
-The repository contains no scripts and no executable program. There is no code path in this repository that parses untrusted input.
+The skill contains no scripts and no executable program, so a user of the skill runs no code from this repository. Untrusted input is parsed only in CI: on every pull request the workflows here call shared workflows of `netresearch/skill-repo-skill`, which check out the pull request and run linters and validators over its Markdown, YAML and JSON files with `contents: read` (see requirement 5).
 
 ## Actors and trust boundaries
 
@@ -70,7 +70,7 @@ Branch protection on `main` (a repository setting) requires a pull request, sign
 
 | Weakness | Where it could arise | Countermeasure |
 |----------|---------------------|----------------|
-| CWE-78 OS command injection | Shell commands in the references | The placeholders (`<vendor>`, `[site]`) are filled in by the user or agent for their own project. The one loop that reuses project data (Phase 3 in `references/assessment-workflow.md`) passes each Composer package name to `composer info` as a quoted argument; no command string is evaluated. |
+| CWE-78 OS command injection | Shell commands in the references | The placeholders (`<vendor>`, `<pkg>`, `<ext>`, `[site]`, `[config-exports]`) are filled in by the user or agent for their own project. The one loop that reuses project data (Phase 3 in `references/assessment-workflow.md`) passes each Composer package name to `composer info` as a quoted argument; no command string is evaluated. |
 | CWE-94 code injection | Project code executed during assessment | `vendor/bin/rector process --dry-run` executes the project's Rector configuration, and Composer commands may load the project's installed Composer plugins; the other commands read files, query a database, query package metadata or fetch the project's live sitemap. The skill cannot contain what that project code does; the limits section of this document advises assessing only projects whose `vendor/` and configuration you trust, or using an isolated environment. The skill text itself carries no such warning. |
 | CWE-798 credential exposure | Commits to this repository | GitHub secret scanning with push protection is enabled for the repository. No file reads or stores credentials. |
 | CWE-829 inclusion of functionality from an untrusted source | CI workflows | The workflows call shared workflows inside the `netresearch` organisation; those pin third-party actions by commit SHA. |
