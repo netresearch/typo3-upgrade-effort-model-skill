@@ -38,7 +38,7 @@ Boundary 1 lies between the skill text and the assessed project: the commands in
 
 ### 1. No executable code of its own
 
-`git ls-files` lists Markdown, JSON, JSONC, YAML and licence files and `.gitignore`; the Skill Validation job finds no shell script and no Python file to lint (`.github/workflows/lint.yml`). The commands the agent is told to run are fenced blocks in `references/assessment-workflow.md` (Phases 1, 3 and 4) and `references/rector-coverage.md` ("How to detect Rector applicability"), two inline commands in `references/relaunch-vs-portation.md` ("Measure the content-migration base"), and three SQL queries and one `grep` inline in `references/flux-to-content-blocks-migration.md`.
+`git ls-files` lists Markdown, JSON, JSONC, YAML and licence files and `.gitignore`; the Skill Validation job finds no shell script and no Python file to lint (`.github/workflows/lint.yml`). The commands the agent is told to run are fenced blocks in `references/assessment-workflow.md` (Phases 1, 3 and 4) and `references/rector-coverage.md` ("How to detect Rector applicability"), two inline commands in `references/relaunch-vs-portation.md` ("Measure the content-migration base"), three SQL queries and one `grep` inline in `references/flux-to-content-blocks-migration.md`, and `grep` searches named without a full command line in the Detection column of `references/risk-multipliers.md` and in `references/upgrade-patterns.md` ("grep changelogs for this marker").
 
 ### 2. The workflow asks for no write to the project
 
@@ -47,6 +47,7 @@ Boundary 1 lies between the skill text and the assessed project: the commands in
 - `references/rector-coverage.md` runs `vendor/bin/rector process --dry-run`. `--dry-run` reports changes without writing them.
 - `references/relaunch-vs-portation.md` counts pages with `curl` against the site's sitemap or a `SELECT COUNT(*)` query.
 - `references/flux-to-content-blocks-migration.md` counts content elements with `SELECT` queries and searches configuration exports with `grep`.
+- `references/risk-multipliers.md` and `references/upgrade-patterns.md` detect affected code and changelog entries with `grep`.
 - `SKILL.md` and the references contain no `composer require`, `composer update`, `rm` or write-mode Rector command.
 - Read-only does not mean no project code runs: `vendor/bin/rector process --dry-run` loads the project's `rector.php` and installed Rector, and Composer commands may load the project's installed Composer plugins. That code runs with the user's permissions and can have side effects the skill does not control.
 
@@ -73,7 +74,7 @@ Branch protection on `main` (a repository setting) requires a pull request, sign
 | CWE-94 code injection | Project code executed during assessment | `vendor/bin/rector process --dry-run` executes the project's Rector configuration, and Composer commands may load the project's installed Composer plugins; the other commands read files, query a database or query package metadata. The skill cannot contain what that project code does; the limits section of this document advises assessing only projects whose `vendor/` and configuration you trust, or using an isolated environment. The skill text itself carries no such warning. |
 | CWE-798 credential exposure | Commits to this repository | GitHub secret scanning with push protection is enabled for the repository. No file reads or stores credentials. |
 | CWE-829 inclusion of functionality from an untrusted source | CI workflows | The workflows call shared workflows inside the `netresearch` organisation; those pin third-party actions by commit SHA. |
-| CWE-1104 unmaintained third-party components | Composer dependency | The only dependency is `netresearch/composer-agent-skill-plugin` (`composer.json`); Renovate opens update pull requests (`renovate.json`). |
+| CWE-1104 unmaintained third-party components | Composer dependency | The only dependency is `netresearch/composer-agent-skill-plugin`, required as `*` in `composer.json`, so every release satisfies the constraint and there is no version for Renovate to raise. Renovate opens update pull requests for the pre-commit hooks pinned in `.pre-commit-config.yaml` (`renovate.json`). |
 
 ## What the skill does not protect against
 
