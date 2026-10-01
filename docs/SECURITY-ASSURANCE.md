@@ -32,7 +32,7 @@ Boundary 1 lies between the skill text and the assessed project: the commands in
 2. The workflow asks for no command that writes to the assessed project. Some of its commands execute code the project controls, with the user's permissions (see [limits](#what-the-skill-does-not-protect-against)).
 3. The skill asks for, stores and transmits no credentials.
 4. The skill and its releases are delivered unmodified from this repository.
-5. Changes reach `main` only through the checks listed in [README.md](../README.md#governance-and-policies).
+5. A pull request into `main` merges only with signed commits and with the checks that branch protection requires passing; repository admins can bypass this.
 
 ## Argument per requirement
 
@@ -59,7 +59,9 @@ Boundary 1 lies between the skill text and the assessed project: the commands in
 - Releases are built by `.github/workflows/release.yml`, which calls the `netresearch/skill-repo-skill` release workflow with `id-token: write` and `attestations: write`. That workflow signs `SHA256SUMS.txt` keyless with `cosign sign-blob` and attests the release archives and checksums with `actions/attest-build-provenance`.
 - The Skill Validation job checks that `plugin.json` and `.claude-plugin/plugin.json` agree and that the `SKILL.md` version matches the plugin version.
 
-### 5. Changes pass automated checks
+### 5. Pull requests pass the required checks
+
+Branch protection on `main` (a repository setting) requires a pull request, signed commits, and passing Skill Validation, CodeQL `Analyze (actions)` and DCO checks on a branch that is up to date with `main`. It is not enforced for repository admins, so an admin can merge without them. Eval Validation runs on every pull request but is not a required check.
 
 `lint.yml` and `eval-validate.yml` grant `contents: read` only. `auto-merge-deps.yml` runs on `pull_request_target` and calls the shared workflow in `netresearch/.github`, which contains no checkout step and runs no pull request code; this repository passes it no secrets. The checks themselves are listed in [README.md](../README.md#governance-and-policies).
 
