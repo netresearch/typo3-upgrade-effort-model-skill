@@ -76,7 +76,7 @@ pre-commit install --install-hooks   # once per clone
 pre-commit run --all-files           # exit 0 = all hooks passed
 ```
 
-The hooks in `.pre-commit-config.yaml` run the same linters, the skill validator and the version-parity check; they use `netresearch/skill-repo-skill` at the pinned `rev:`, while CI uses its `main`. The manifest-sync and eval checks have no hook; with a checkout of `netresearch/skill-repo-skill` at `<tools>`, run them from the root of this repository:
+The hooks in `.pre-commit-config.yaml` run the same linters, the skill validator and the version-parity check; they use `netresearch/skill-repo-skill` at the pinned `rev:`, while CI uses its `main`. The skill-validator hook also compares the fields the two plugin manifests share. The eval check has no hook, and CI checks the manifests with `sync-plugin-manifest.sh --check` from `main` rather than with the pinned hook; with a checkout of `netresearch/skill-repo-skill` at `<tools>`, run both from the root of this repository:
 
 ```bash
 bash <tools>/skills/skill-repo/scripts/sync-plugin-manifest.sh --check
@@ -89,7 +89,7 @@ A failure names the file and the rule: an `MD…` rule for markdownlint, a yamll
 
 - **Runtime:** none. The skill is text. The commands in the references use tools of the assessed project (Composer, PHP, `jq`, Rector), which the user provides.
 - **Composer:** `composer.json` requires `netresearch/composer-agent-skill-plugin`, which installs the skill into a Composer project. There is no lock file; the package is consumed as a library.
-- **CI:** the workflows call shared workflows in `netresearch/skill-repo-skill` and `netresearch/.github` by `@main`; those pin third-party actions by commit SHA and tools by version. The pre-commit hooks are pinned by `rev:` in `.pre-commit-config.yaml`.
+- **CI:** the workflows call shared workflows in `netresearch/skill-repo-skill` and `netresearch/.github` by `@main`; those pin third-party actions by commit SHA and ruff and ShellCheck by version; `astral-sh/setup-uv` installs the latest uv release. The pre-commit hooks are pinned by `rev:` in `.pre-commit-config.yaml`.
 - **Updates:** Renovate (`renovate.json`, extending the organisation preset `local>netresearch/renovate-config`, with the `pre-commit` manager enabled) opens update pull requests. `auto-merge-deps.yml` passes pull requests from Renovate and Dependabot to the shared auto-merge workflow in `netresearch/.github`.
 - **Selection:** a new dependency is added only when the skill or its checks cannot work without it, and is declared where its consumer reads it (`composer.json` for Composer, `.pre-commit-config.yaml` for hooks).
 
