@@ -21,7 +21,7 @@
         }
     ],
     "require": {
-        "netresearch/composer-agent-skill-plugin": "*"
+        "netresearch/composer-agent-skill-plugin": "^2.0"
     },
     "extra": {
         "ai-agent-skill": "skills/typo3-upgrade-effort-model/SKILL.md"
