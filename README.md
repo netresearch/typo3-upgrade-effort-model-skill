@@ -88,8 +88,8 @@ A failure names the file and the rule: an `MD…` rule for markdownlint, a yamll
 ## Dependencies
 
 - **Runtime:** none. The skill is text. The commands in the references use tools of the assessed project (Composer, PHP, `jq`, Rector), which the user provides.
-- **Composer:** `composer.json` requires `netresearch/composer-agent-skill-plugin`, which installs the skill into a Composer project. There is no lock file; the package is consumed as a library.
-- **CI:** the workflows call shared workflows in `netresearch/skill-repo-skill` and `netresearch/.github` by `@main`; those pin third-party actions by commit SHA and ruff and ShellCheck by version; `astral-sh/setup-uv` installs the latest uv release. The pre-commit hooks are pinned by `rev:` in `.pre-commit-config.yaml`.
+- **Composer:** `composer.json` requires `netresearch/composer-agent-skill-plugin` at `^2.0`, which installs the skill into a Composer project. There is no lock file; the package is consumed as a library.
+- **CI:** the workflows call shared workflows in `netresearch/skill-repo-skill`, `netresearch/.github` and `netresearch/typo3-ci-workflows` by `@main`; those pin third-party actions by commit SHA and ruff and ShellCheck by version; `astral-sh/setup-uv` installs the latest uv release. The pre-commit hooks are pinned by `rev:` in `.pre-commit-config.yaml`.
 - **Updates:** Renovate (`renovate.json`, extending the organisation preset `local>netresearch/renovate-config`, with the `pre-commit` manager enabled) opens update pull requests. `auto-merge-deps.yml` passes pull requests from Renovate and Dependabot to the shared auto-merge workflow in `netresearch/.github`.
 - **Selection:** a new dependency is added only when the skill or its checks cannot work without it, and is declared where its consumer reads it (`composer.json` for Composer, `.pre-commit-config.yaml` for hooks).
 
@@ -111,8 +111,8 @@ Checks that run on pull requests in this repository:
 - DCO: every commit carries a `Signed-off-by` trailer.
 - CodeQL default setup (a repository setting, not a workflow file) analyses the GitHub Actions workflows with the extended query suite.
 - CodeRabbit (a GitHub App configured for the organisation, not a workflow file) reviews pull requests and reports a `CodeRabbit` status; it is not a required check.
-- Branch protection on `main` requires Skill Validation, CodeQL `Analyze (actions)` and DCO to pass before a merge; it is not enforced for repository admins.
-- No workflow here runs dependency review, a dependency audit, Opengrep or Betterleaks. Secret detection is GitHub secret scanning with push protection, which is enabled for this repository.
+- Security (`security.yml`, on pull requests into `main` and pushes to `main`): Betterleaks secret scanning, zizmor workflow analysis, dependency review (pull requests only), and `composer audit` with an Opengrep SAST scan (`--config auto`; which findings fail the check is set by the [organisation rule](https://github.com/netresearch/.github/blob/main/SECURITY.md#static-analysis-sast)). GitHub secret scanning with push protection is also enabled for this repository.
+- Branch protection on `main` requires Skill Validation, Eval Validation, Secret Scanning, Composer Audit, SAST (Opengrep), dependency review, CodeQL `Analyze (actions)` and DCO to pass before a merge; it is not enforced for repository admins.
 
 ## License
 
