@@ -19,7 +19,7 @@ composer.json               Composer distribution metadata
 .pre-commit-config.yaml     local hooks, the same linters as CI
 .github/workflows/          CI callers of reusable workflows
 .github/template.yaml       skill template this repo follows, with intentional drift
-.github/labeler.yml         path-to-label rules for the Labeler workflow
+.github/labeler.yml         path-to-label rules for the Labeler workflow (template-governed)
 ```
 
 ## Commands
@@ -34,7 +34,7 @@ There is no build and no test suite; see [README.md](README.md) for the checks t
 - Licensing is split: code, configuration and workflows are MIT ([LICENSE-MIT](LICENSE-MIT)); documentation and skill content are CC-BY-SA-4.0 ([LICENSE-CC-BY-SA-4.0](LICENSE-CC-BY-SA-4.0)). `composer.json` declares `(MIT AND CC-BY-SA-4.0)`.
 - Keep `plugin.json` and `.claude-plugin/plugin.json` in step, and the `SKILL.md` version equal to the plugin version; Skill Validation (`.github/workflows/lint.yml`) fails otherwise.
 - A change to `SKILL.md` or a reference that changes an answer the skill gives comes with a case in `evals/evals.json` that asserts the new answer ([README.md](README.md), Contributing).
-- The workflow files that also exist in the `skill` template of `netresearch/.github` are governed by it; `.github/template.yaml` lists the intentional exceptions (`lint.yml`, `release.yml`), and Template Drift fails when any other governed file differs.
+- The files under `.github/` that also exist in the `skill` template of `netresearch/.github` (the workflows and `labeler.yml`) are governed by it; `.github/template.yaml` lists the intentional exceptions (`lint.yml`, `release.yml`), and Template Drift fails when any other governed file differs.
 - Reusable workflows are called by `@main` from `netresearch/.github`, `netresearch/skill-repo-skill` and `netresearch/typo3-ci-workflows`.
 - Every commit needs a `Signed-off-by` trailer (`git commit -s`) and a signature; branch protection on `main` requires signed commits and the DCO check.
 - The skill ships no executable code and asks for no write to the assessed project; see [docs/SECURITY-ASSURANCE.md](docs/SECURITY-ASSURANCE.md) before adding either.
