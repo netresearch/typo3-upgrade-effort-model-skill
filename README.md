@@ -58,18 +58,21 @@ For Netresearch-internal use with historical-data calibration, see `coding-ai/ty
 
 ## Contributing
 
-Issues and pull requests are welcome. Every commit needs a `Signed-off-by` trailer (`git commit -s`); the DCO check enforces it.
+Issues and pull requests are welcome. Every commit needs a `Signed-off-by` trailer (`git commit -s`); the DCO check enforces it. The repository layout, commands and rules are indexed in [AGENTS.md](AGENTS.md).
 
 A change to `SKILL.md` or a reference that changes an answer the skill gives (a multiplier, a baseline, a workflow step) comes with a case in `evals/evals.json` that asserts the new answer.
 
 ### Checks
 
-The repository ships no executable code, so it has no behavioural tests. The checks validate the skill's structure, its evaluation cases and the syntax of every file:
+The repository ships no executable code, so it has no behavioural tests. The checks validate the skill's structure, its evaluation cases, the syntax of every file, the agent index `AGENTS.md` and the CI files' match with the organisation template:
 
 - **Skill Validation** (`.github/workflows/lint.yml`, calling `validate.yml` of `netresearch/skill-repo-skill`): skill structure and front matter (`validate-skill.sh`), manifest sync between `plugin.json` and `.claude-plugin/plugin.json`, `SKILL.md` version against the plugin version, markdownlint, yamllint, actionlint, JSON syntax, ShellCheck at severity `style`, ruff check and format, checkpoint schema. Steps that find no file of their kind (shell, Python, checkpoints) say so and pass.
 - **Eval Validation** (`.github/workflows/eval-validate.yml`): checks the structure of `evals/evals.json` with `validate-evals.sh`. It does not run the prompts against a model.
 
-Both run on every pull request and on every push to `main`. To run the same checks locally:
+- **Harness Verification** (`.github/workflows/harness-verify.yml`, calling `harness-verify.yml` of `netresearch/skill-repo-skill`): `AGENTS.md` exists, has at most 150 lines, and every relative link in it resolves. Documented `make`, `composer` and `npm run` commands without a matching target or script, and build or CI files changed without an `AGENTS.md` change, are reported as warnings.
+- **Template Drift** (`.github/workflows/check-template-drift.yml`, calling `check-template-drift.yml` of `netresearch/.github`): fails when a file governed by the `skill` template of `netresearch/.github` differs from it. `.github/template.yaml` lists the intentional exceptions (`lint.yml`, `release.yml`).
+
+Skill Validation runs on every pull request and on every push to `main`. Eval Validation runs on every pull request and on every push to `main` and `master`. Harness Verification and Template Drift run on pull requests into `main` and `master`; Template Drift also runs on pushes to `main` and `master` and in merge queues. To run the same checks locally:
 
 ```bash
 pre-commit install --install-hooks   # once per clone
@@ -89,8 +92,8 @@ A failure names the file and the rule: an `MD…` rule for markdownlint, a yamll
 
 - **Runtime:** none. The skill is text. The commands in the references use tools of the assessed project (Composer, PHP, `jq`, Rector), which the user provides.
 - **Composer:** `composer.json` requires `netresearch/composer-agent-skill-plugin` at `^2.0`, which installs the skill into a Composer project. There is no lock file; the package is consumed as a library.
-- **CI:** the workflows call shared workflows in `netresearch/skill-repo-skill`, `netresearch/.github` and `netresearch/typo3-ci-workflows` by `@main`; those pin third-party actions by commit SHA and ruff and ShellCheck by version; `astral-sh/setup-uv` installs the latest uv release. The pre-commit hooks are pinned by `rev:` in `.pre-commit-config.yaml`.
-- **Updates:** Renovate (`renovate.json`, extending the organisation preset `local>netresearch/renovate-config`, with the `pre-commit` manager enabled) opens update pull requests. `auto-merge-deps.yml` passes pull requests from Renovate and Dependabot to the shared auto-merge workflow in `netresearch/.github`.
+- **CI:** the workflows call shared workflows in `netresearch/skill-repo-skill`, `netresearch/.github` and `netresearch/typo3-ci-workflows` by `@main`; those pin third-party actions by commit SHA and ruff and ShellCheck by version; `astral-sh/setup-uv` installs the latest uv release. `scorecard.yml` runs OpenSSF Scorecard through the shared workflow in `netresearch/.github` on pushes to `main` and `master`, weekly and on manual dispatch, not on pull requests. The pre-commit hooks are pinned by `rev:` in `.pre-commit-config.yaml`.
+- **Updates:** Renovate (`renovate.json`, extending the organisation preset `local>netresearch/renovate-config`, with the `pre-commit` manager enabled) opens update pull requests. `auto-merge-deps.yml` (on `pull_request_target`) passes pull requests from Renovate and Dependabot to the shared auto-merge workflow in `netresearch/.github`, together with the secrets `PROJECT_APP_ID` and `PROJECT_APP_PRIVATE_KEY`; the shared workflow skips other authors and pull requests labelled `deps-major` or `deps-no-automerge`.
 - **Selection:** a new dependency is added only when the skill or its checks cannot work without it, and is declared where its consumer reads it (`composer.json` for Composer, `.pre-commit-config.yaml` for hooks).
 
 ## Governance and policies
@@ -107,7 +110,8 @@ The security assurance case for this skill (threat model, trust boundaries, coun
 
 Checks that run on pull requests in this repository:
 
-- Skill Validation (`lint.yml`) and Eval Validation (`eval-validate.yml`), described under [Checks](#checks).
+- Skill Validation (`lint.yml`), Eval Validation (`eval-validate.yml`), Harness Verification (`harness-verify.yml`) and Template Drift (`check-template-drift.yml`), described under [Checks](#checks).
+- Labeler (`labeler.yml`, on `pull_request_target`): applies labels from `.github/labeler.yml` through the shared workflow in `netresearch/.github`, which does not check out the pull request.
 - DCO: every commit carries a `Signed-off-by` trailer.
 - CodeQL default setup (a repository setting, not a workflow file) analyses the GitHub Actions workflows with the extended query suite.
 - CodeRabbit (a GitHub App configured for the organisation, not a workflow file) reviews pull requests and reports a `CodeRabbit` status; it is not a required check.
