@@ -116,7 +116,7 @@ Checks that run on pull requests in this repository:
 - CodeQL (the `codeql` job of `security.yml`) analyses the GitHub Actions workflows with the `security-and-quality` query suite.
 - CodeRabbit (a GitHub App configured for the organisation, not a workflow file) reviews pull requests and reports a `CodeRabbit` status; it is not a required check.
 - Security (`security.yml`, on pull requests into `main` and pushes to `main`): Betterleaks secret scanning, zizmor workflow analysis, dependency review (pull requests only), and `composer audit` with an Opengrep SAST scan (`--config auto`; which findings fail the check is set by the [organisation rule](https://github.com/netresearch/.github/blob/main/SECURITY.md#static-analysis-sast)). GitHub secret scanning with push protection is also enabled for this repository.
-- Branch protection on `main` requires Skill Validation, Eval Validation, Secret Scanning, Composer Audit, SAST (Opengrep), dependency review, CodeQL `Analyze (actions)` and DCO to pass before a merge; it is not enforced for repository admins.
+- Branch protection on `main` requires Skill Validation, Eval Validation, DCO and `All security checks` (the `gate` job of `security.yml`, which fails when Betterleaks, zizmor, dependency review, Composer Audit with Opengrep or CodeQL fails) to pass before a merge, and a repository ruleset blocks a merge on CodeQL security alerts of severity high or higher and on CodeQL alerts of level error; branch protection is not enforced for repository admins.
 
 ## License
 
